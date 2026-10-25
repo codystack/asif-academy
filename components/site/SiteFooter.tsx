@@ -1,4 +1,5 @@
 import { SITE_NAME } from "@/lib/config";
+import { SOCIAL_LINKS } from "./socialLinks";
 
 const LINK_GROUPS = [
   {
@@ -22,14 +23,6 @@ const LINK_GROUPS = [
       { label: "Create account", href: "/register" },
     ],
   },
-  {
-    title: "Follow",
-    links: [
-      { label: "Instagram", href: "#" },
-      { label: "Facebook", href: "#" },
-      { label: "YouTube", href: "#" },
-    ],
-  },
 ];
 
 export default function SiteFooter() {
@@ -44,12 +37,6 @@ export default function SiteFooter() {
             <p className="tp-site-footer-dec">
               Practical fashion design and sewing classes in Milton Keynes, from your very first stitch to advanced garment construction.
             </p>
-            <a href="/courses" className="tp-site-footer-btn">
-              Find classes
-              <svg width="16" height="12" viewBox="0 0 16 12" fill="none" aria-hidden="true">
-                <path d="M1 6H15M15 6L10 1M15 6L10 11" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"></path>
-              </svg>
-            </a>
           </div>
           <nav className="tp-site-footer-links" aria-label="Footer">
             {LINK_GROUPS.map((group) => (
@@ -64,9 +51,20 @@ export default function SiteFooter() {
                 </ul>
               </div>
             ))}
+            <div className="tp-site-footer-col">
+              <h3 className="tp-site-footer-title">Follow</h3>
+              <div className="tp-site-footer-social">
+                {SOCIAL_LINKS.map((link) => (
+                  <a key={link.label} href={link.href} aria-label={link.label} target="_blank" rel="noopener noreferrer">
+                    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                      {link.icon}
+                    </svg>
+                  </a>
+                ))}
+              </div>
+            </div>
           </nav>
         </div>
-        <p className="tp-site-footer-wordmark" aria-hidden="true">Asif Fashion Academy</p>
         <div className="tp-site-footer-bottom">
           <p>&copy; {new Date().getFullYear()} {SITE_NAME}</p>
         </div>

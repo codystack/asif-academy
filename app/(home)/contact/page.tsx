@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import ContactForm from "./ContactForm";
 import { SITE_NAME } from "@/lib/config";
 import { getCourses } from "@/lib/data";
+import { SOCIAL_LINKS } from "@/components/site/socialLinks";
 import { logTraffic } from "@/lib/traffic";
 
 export const metadata: Metadata = {
@@ -12,37 +13,26 @@ export const metadata: Metadata = {
 const CONTACT_DETAILS = [
   {
     label: "Email",
+    tone: "blue",
     value: "hello@asifacademy.com",
     href: "mailto:hello@asifacademy.com",
-    tone: "blue",
     icon: (
       <path d="M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm0 0v1.5a2.5 2.5 0 0 0 5 0V12a9 9 0 1 0-3.5 7.1" />
     ),
   },
   {
     label: "Phone",
+    tone: "purple",
     value: "+44 7786 235293",
     href: "tel:+447786235293",
-    tone: "green",
     icon: (
       <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z" />
     ),
   },
   {
-    label: "Hours",
-    value: "Mon–Sat, 9:00–19:00",
-    tone: "lime",
-    icon: (
-      <>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 7v5l3 2" />
-      </>
-    ),
-  },
-  {
     label: "Where",
-    value: "Milton Keynes, UK and live online",
     tone: "pink",
+    value: "Milton Keynes, UK and live online",
     icon: (
       <>
         <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z" />
@@ -99,6 +89,18 @@ export default async function ContactPage() {
                 </li>
               ))}
             </ul>
+            <div className="tp-contact-fit-social">
+              <span className="tp-contact-fit-label">Follow us</span>
+              <div className="tp-contact-fit-social-links">
+                {SOCIAL_LINKS.map((link) => (
+                  <a key={link.label} href={link.href} aria-label={link.label} target="_blank" rel="noopener noreferrer">
+                    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+                      {link.icon}
+                    </svg>
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
           <div className="tp-contact-fit-card">
             <ContactForm courses={courses.map((course) => course.title)} />
