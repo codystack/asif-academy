@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Jane Student",
+        "email": "jane@example.com",
+        "password_hash": "$2y$10$AIJ/wvRanG.JhOVxIXplWu73j76sWGuuKN5jm23/Hnvdqjwmlh0PS",
+        "created_at": "2026-07-11 11:01:26"
+    },
+    {
+        "name": "Jane2",
+        "email": "jane2@example.com",
+        "password_hash": "$2y$10$6ATEkfVl1WsOZPq4x6fgQe07JY2BjRuFXCcpwJDfHyARZBoAbYYHu",
+        "created_at": "2026-07-11 11:01:42"
+    },
+    {
+        "name": "Jane3",
+        "email": "jane3@example.com",
+        "password_hash": "$2y$10$GVp6IVJLcaFpd.XiOeLdTeOdSeR2P42/QhWt4NcUxkLGaxLsNlTkm",
+        "created_at": "2026-07-11 11:01:55"
+    },
+    {
+        "name": "Jane4",
+        "email": "jane4@example.com",
+        "password_hash": "$2y$10$IhAbKLQortc8dj8RlJqxBOYHloBP909MbDBg8cEW/3ywu0ovUbbfK",
+        "created_at": "2026-07-11 11:02:31"
+    }
+]

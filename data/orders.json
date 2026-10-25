@@ -1,0 +1,20 @@
+[
+    {
+        "session_id": "cs_live_a1ybJVraDZ5I0OZe77PJEKuWyeZfNfWzalxuEmOZsCEL6EyXKx4HbnWzkd",
+        "course_id": "couture-tailoring",
+        "title": "Couture Tailoring",
+        "price": 249,
+        "status": "pending",
+        "created_at": "2026-07-12 14:36:48",
+        "ip": "::1"
+    },
+    {
+        "session_id": "cs_live_a1SXJ31Hp9sfwkY6a0xAk8iotAgghqnGGPrjBW3lepuMDtkCZ7RqDLpKaJ",
+        "course_id": "pattern-explorer",
+        "title": "Pattern Explorer",
+        "price": 179,
+        "status": "pending",
+        "created_at": "2026-07-13 00:35:32",
+        "ip": "::1"
+    }
+]

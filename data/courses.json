@@ -1,0 +1,50 @@
+[
+  {
+    "id": "sewing-foundation",
+    "title": "Sewing Foundation",
+    "summary": "Build a confident sewing routine with essential machine skills and first wearable projects.",
+    "description": "Master stitching, fabric selection, fitting, and finishing techniques across garment and home sewing.",
+    "price": 129.00,
+    "duration": "6 weeks",
+    "level": "Beginner",
+    "image": "course-thumb-1.jpg",
+    "highlights": [
+      "Machine mastery",
+      "Wardrobe basics",
+      "Fabric handling",
+      "Professional finishes"
+    ]
+  },
+  {
+    "id": "pattern-explorer",
+    "title": "Pattern Explorer",
+    "summary": "Decode commercial patterns and create custom-fit garments with intelligent pattern adjustments.",
+    "description": "Learn pattern reading, customization, dart manipulation, and smart grading for the exact fit you want.",
+    "price": 179.00,
+    "duration": "8 weeks",
+    "level": "Intermediate",
+    "image": "course-thumb-2.jpg",
+    "highlights": [
+      "Pattern breakdown",
+      "Fit customization",
+      "Dart styling",
+      "Advanced alterations"
+    ]
+  },
+  {
+    "id": "couture-tailoring",
+    "title": "Couture Tailoring",
+    "summary": "Elevate your sewing with couture finishes, structured shaping, and expert garment construction.",
+    "description": "Discover couture hand-sewing, lining techniques, internal tailoring details, and premium finishing work.",
+    "price": 249.00,
+    "duration": "10 weeks",
+    "level": "Advanced",
+    "image": "course-thumb-3.jpg",
+    "highlights": [
+      "Couture techniques",
+      "Luxury fabrics",
+      "Tailored silhouettes",
+      "Polished finishes"
+    ]
+  }
+]
