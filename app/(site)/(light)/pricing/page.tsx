@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import FaqSection from "@/components/site/FaqSection";
 import { SITE_NAME } from "@/lib/config";
 import { PROGRAMMES } from "@/lib/programmes";
 import { logTraffic } from "@/lib/traffic";
@@ -114,6 +115,7 @@ export default async function PricingPage() {
           </div>
         </div>
       </section>
+      <FaqSection />
     </>
   );
 }
