@@ -1,7 +1,7 @@
 import "server-only";
 import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
-import { ADMIN_PASSWORD_HASH, ADMIN_USERNAME } from "./config";
+import { ADMIN_EMAIL, ADMIN_PASSWORD_HASH } from "./config";
 import { clearSession, getSession, setSession } from "./session";
 
 const ADMIN_COOKIE = "aa_admin";
@@ -16,8 +16,9 @@ export async function requireAdmin() {
   }
 }
 
-export async function adminLogin(username: string, password: string) {
-  if (username === ADMIN_USERNAME && (await bcrypt.compare(password, ADMIN_PASSWORD_HASH))) {
+export async function adminLogin(email: string, password: string) {
+  const emailMatches = ADMIN_EMAIL !== "" && email.toLowerCase() === ADMIN_EMAIL;
+  if (emailMatches && ADMIN_PASSWORD_HASH !== "" && (await bcrypt.compare(password, ADMIN_PASSWORD_HASH))) {
     await setSession(ADMIN_COOKIE, true);
     return true;
   }

@@ -3,7 +3,7 @@
 export const SOCIAL_LINKS = [
   {
     label: "Instagram",
-    href: "#",
+    href: "https://www.instagram.com/afacademy.uk/",
     icon: (
       <g fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -14,7 +14,7 @@ export const SOCIAL_LINKS = [
   },
   {
     label: "TikTok",
-    href: "#",
+    href: "https://www.tiktok.com/@afacadmyuk",
     icon: (
       <path
         fill="currentColor"

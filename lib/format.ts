@@ -1,7 +1,7 @@
-const currency = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const currency = new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" });
 
 export function formatCurrency(value: number | string | undefined): string {
-  return "$" + currency.format(Number(value) || 0);
+  return currency.format(Number(value) || 0);
 }
 
 // Matches PHP's date('Y-m-d H:i:s'), which the JSON data files already use.

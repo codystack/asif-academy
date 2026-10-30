@@ -28,11 +28,12 @@ Production: `npm run build && npm start`.
 
 ```
 app/
-  (home)/            "/" — own root layout (body class differs)
-  (site)/            about, courses, courses/[id], faq, contact, success, index-2, index-3
-  (auth)/            student login + register (no site header/footer)
-  (admin)/admin/     dashboard pages + Server Actions, guarded by requireAdmin()
-  (admin-login)/     /admin/login (own <body> class, outside the guard)
+  (site)/            public root layout (html shell, footer, theme scripts)
+    (light)/         "/", contact, enrol, pricing — light header
+    (default)/       about, faq, success — default header
+  admin/             admin root layout + Server Actions
+    (dashboard)/     dashboard pages, guarded by requireAdmin()
+    login/, logout/  outside the guard
   checkout/route.ts  creates the Stripe Checkout session, redirects to Stripe
   global-not-found.tsx
 components/site/     header, footer, nav, theme CSS/JS loaders, course cards
