@@ -1,7 +1,8 @@
 import { SITE_NAME } from "@/lib/config";
 import MainNav from "./MainNav";
 
-export default function SiteHeader() {
+// `light` applies the tp-home-light styles, which only target elements inside <header>.
+export default function SiteHeader({ light = false }: { light?: boolean }) {
   return (
     <>
       {/* back to top start */}
@@ -60,7 +61,7 @@ export default function SiteHeader() {
           </span>
           {" "}
           <span>
-            <a href="mailto:hello@asifacademy.com">hello@asifacademy.com</a>
+            <a href="mailto:hello@asiffashionacademy.com">hello@asiffashionacademy.com</a>
           </span>
           {" "}
           <span>Live online studio — sessions streamed worldwide</span>
@@ -101,7 +102,7 @@ export default function SiteHeader() {
       </div>
       <div className="tp-offcanvas-overlay"></div>
       {/* tp-offcanvas end */}
-      <header>
+      <header className={light ? "tp-home-light" : undefined}>
         {/* header-area-start */}
         <div id="header-sticky" className="tp-header-area tp-header-bg tp-header-lg-spacing tp-transparent">
           <div className="container">

@@ -1,26 +1,6 @@
 import "server-only";
-import fs from "node:fs/promises";
-import {
-  ABANDONED_FILE,
-  COURSES_FILE,
-  MESSAGES_FILE,
-  ORDERS_FILE,
-  STUDENTS_FILE,
-  TRAFFIC_FILE,
-} from "./config";
+import { db } from "./db";
 import { timestamp } from "./format";
-
-export type Course = {
-  id: string;
-  title: string;
-  summary: string;
-  description: string;
-  price: number;
-  duration: string;
-  level: string;
-  image: string;
-  highlights: string[];
-};
 
 export type OrderStatus = "pending" | "paid" | "cancelled";
 
@@ -60,151 +40,185 @@ export type Message = {
   created_at: string;
 };
 
-export type Student = {
+// Enrolment details submitted after paying for a pricing-page programme.
+export type Registration = {
+  session_id: string;
+  programme_id: string;
+  programme_name: string;
+  amount_paid: number;
   name: string;
   email: string;
-  password_hash: string;
+  phone: string;
+  experience: string;
+  has_machine: string;
+  goals: string;
+  emergency_name: string;
+  emergency_phone: string;
+  heard_about: string;
   created_at: string;
 };
 
-async function loadJson<T>(file: string, fallback: T[] = []): Promise<T[]> {
-  try {
-    const json = JSON.parse(await fs.readFile(file, "utf8"));
-    return Array.isArray(json) ? json : fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-async function saveJson(file: string, data: unknown): Promise<void> {
-  await fs.writeFile(file, JSON.stringify(data, null, 4));
-}
-
-// Courses
-
-export function getCourses() {
-  return loadJson<Course>(COURSES_FILE);
-}
-
-export async function findCourse(id: string): Promise<Course | null> {
-  return (await getCourses()).find((course) => String(course.id) === String(id)) ?? null;
-}
-
-export async function addCourse(course: Course) {
-  const courses = await getCourses();
-  courses.push(course);
-  await saveJson(COURSES_FILE, courses);
-}
-
-export async function generateCourseId(title: string): Promise<string> {
-  const slug =
-    title.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") ||
-    `course-${Math.floor(Date.now() / 1000)}`;
-  const existingIds = new Set((await getCourses()).map((course) => course.id));
-  let candidate = slug;
-  for (let counter = 1; existingIds.has(candidate); counter++) {
-    candidate = `${slug}-${counter}`;
-  }
-  return candidate;
-}
+// Timestamps are returned in the same "YYYY-MM-DD HH:MM:SS" form the JSON files used.
+const fmt = (column: string) => db()`to_char(${db()(column)}, 'YYYY-MM-DD HH24:MI:SS')`;
 
 // Orders
 
-export function getOrders() {
-  return loadJson<Order>(ORDERS_FILE);
+export async function getOrders(): Promise<Order[]> {
+  const sql = db();
+  const rows = await sql<(Omit<Order, "updated_at"> & { updated_at: string | null })[]>`
+    SELECT session_id, course_id, title, price::float8 AS price, status,
+           ${fmt("created_at")} AS created_at, ${fmt("updated_at")} AS updated_at, ip
+    FROM orders ORDER BY created_at, session_id`;
+  return rows.map(({ updated_at, ...order }) => ({ ...order, ...(updated_at && { updated_at }) }));
 }
 
 export async function recordOrder(order: Order) {
-  const orders = await getOrders();
-  orders.push(order);
-  await saveJson(ORDERS_FILE, orders);
+  const sql = db();
+  await sql`
+    INSERT INTO orders (session_id, course_id, title, price, status, created_at, updated_at, ip)
+    VALUES (${order.session_id}, ${order.course_id}, ${order.title}, ${order.price}, ${order.status},
+            ${order.created_at}, ${order.updated_at ?? null}, ${order.ip})
+    ON CONFLICT (session_id) DO NOTHING`;
 }
 
 export async function updateOrderStatus(sessionId: string, status: OrderStatus) {
-  const orders = await getOrders();
-  for (const order of orders) {
-    if (order.session_id === sessionId) {
-      order.status = status;
-      order.updated_at = timestamp();
-    }
-  }
-  await saveJson(ORDERS_FILE, orders);
+  const sql = db();
+  await sql`UPDATE orders SET status = ${status}, updated_at = ${timestamp()} WHERE session_id = ${sessionId}`;
 }
 
 // Traffic
 
-export function getTraffic() {
-  return loadJson<TrafficEntry>(TRAFFIC_FILE);
+export async function getTraffic(): Promise<TrafficEntry[]> {
+  const sql = db();
+  return sql<TrafficEntry[]>`
+    SELECT page, path, ${fmt("timestamp")} AS timestamp, ip, user_agent FROM traffic ORDER BY id`;
 }
 
 export async function appendTraffic(entry: TrafficEntry) {
-  const traffic = await getTraffic();
-  traffic.push(entry);
-  await saveJson(TRAFFIC_FILE, traffic);
+  const sql = db();
+  await sql`
+    INSERT INTO traffic (page, path, "timestamp", ip, user_agent)
+    VALUES (${entry.page}, ${entry.path}, ${entry.timestamp}, ${entry.ip}, ${entry.user_agent})`;
 }
 
 export async function getTrafficCounts(): Promise<Record<string, number>> {
-  const counts: Record<string, number> = {};
-  for (const item of await getTraffic()) {
-    const page = item.page ?? "unknown";
-    counts[page] = (counts[page] ?? 0) + 1;
-  }
-  return Object.fromEntries(Object.entries(counts).sort(([, a], [, b]) => b - a));
+  const sql = db();
+  const rows = await sql<{ page: string; count: number }[]>`
+    SELECT page, count(*)::int AS count FROM traffic GROUP BY page ORDER BY count DESC`;
+  return Object.fromEntries(rows.map((row) => [row.page, row.count]));
 }
 
-export async function getRecentTraffic(limit = 8) {
-  return (await getTraffic()).reverse().slice(0, limit);
+export async function getRecentTraffic(limit = 8): Promise<TrafficEntry[]> {
+  const sql = db();
+  return sql<TrafficEntry[]>`
+    SELECT page, path, ${fmt("timestamp")} AS timestamp, ip, user_agent
+    FROM traffic ORDER BY id DESC LIMIT ${limit}`;
 }
 
 // Abandoned carts
 
-export function getAbandonedCarts() {
-  return loadJson<AbandonedCart>(ABANDONED_FILE);
+export async function getAbandonedCarts(): Promise<AbandonedCart[]> {
+  const sql = db();
+  return sql<AbandonedCart[]>`
+    SELECT session_id, course_id, title, price::float8 AS price,
+           ${fmt("created_at")} AS created_at, ${fmt("updated_at")} AS updated_at
+    FROM abandoned_carts ORDER BY created_at, session_id`;
 }
 
 export async function addAbandonedCart(cart: AbandonedCart) {
-  const existing = await getAbandonedCarts();
-  const item = existing.find((c) => c.session_id === cart.session_id);
-  if (item) {
-    Object.assign(item, cart, { updated_at: timestamp() });
-  } else {
-    existing.push({ ...cart, created_at: timestamp(), updated_at: timestamp() });
-  }
-  await saveJson(ABANDONED_FILE, existing);
+  const sql = db();
+  const now = timestamp();
+  await sql`
+    INSERT INTO abandoned_carts (session_id, course_id, title, price, created_at, updated_at)
+    VALUES (${cart.session_id}, ${cart.course_id}, ${cart.title}, ${cart.price}, ${now}, ${now})
+    ON CONFLICT (session_id) DO UPDATE
+      SET course_id = EXCLUDED.course_id, title = EXCLUDED.title, price = EXCLUDED.price, updated_at = EXCLUDED.updated_at`;
 }
 
 export async function removeAbandonedCart(sessionId: string) {
-  const existing = await getAbandonedCarts();
-  const filtered = existing.filter((c) => c.session_id !== sessionId);
-  if (filtered.length !== existing.length) {
-    await saveJson(ABANDONED_FILE, filtered);
-  }
+  const sql = db();
+  await sql`DELETE FROM abandoned_carts WHERE session_id = ${sessionId}`;
 }
 
 export async function getAbandonedSummary() {
-  const carts = await getAbandonedCarts();
-  return {
-    count: carts.length,
-    total: carts.reduce((sum, cart) => sum + (Number(cart.price) || 0), 0),
-  };
+  const sql = db();
+  const [summary] = await sql<{ count: number; total: number }[]>`
+    SELECT count(*)::int AS count, coalesce(sum(price), 0)::float8 AS total FROM abandoned_carts`;
+  return summary;
 }
 
 // Contact messages
 
+export async function getMessages(limit?: number): Promise<(Message & { id: number })[]> {
+  const sql = db();
+  return sql<(Message & { id: number })[]>`
+    SELECT id::int AS id, name, email, subject, message, ${fmt("created_at")} AS created_at
+    FROM messages ORDER BY created_at DESC, id DESC ${limit ? sql`LIMIT ${limit}` : sql``}`;
+}
+
 export async function addMessage(message: Message) {
-  const messages = await loadJson<Message>(MESSAGES_FILE);
-  messages.push(message);
-  await saveJson(MESSAGES_FILE, messages);
+  const sql = db();
+  await sql`
+    INSERT INTO messages (name, email, subject, message, created_at)
+    VALUES (${message.name}, ${message.email}, ${message.subject}, ${message.message}, ${message.created_at})`;
 }
 
-// Students
+// Registrations
 
-export async function findStudent(email: string): Promise<Student | null> {
-  return (await loadJson<Student>(STUDENTS_FILE)).find((s) => s.email === email) ?? null;
+const REGISTRATION_COLUMNS = (sql: ReturnType<typeof db>) => sql`
+  session_id, programme_id, programme_name, amount_paid::float8 AS amount_paid, name, email, phone, experience,
+  has_machine, goals, emergency_name, emergency_phone, heard_about, ${fmt("created_at")} AS created_at`;
+
+export async function getRegistrations(): Promise<Registration[]> {
+  const sql = db();
+  return sql<Registration[]>`SELECT ${REGISTRATION_COLUMNS(sql)} FROM registrations ORDER BY created_at, session_id`;
 }
 
-export async function addStudent(student: Student) {
-  const students = await loadJson<Student>(STUDENTS_FILE);
-  students.push(student);
-  await saveJson(STUDENTS_FILE, students);
+export async function getRecentRegistrations(limit = 5): Promise<Registration[]> {
+  const sql = db();
+  return sql<Registration[]>`
+    SELECT ${REGISTRATION_COLUMNS(sql)} FROM registrations ORDER BY created_at DESC, session_id LIMIT ${limit}`;
+}
+
+export async function findRegistration(sessionId: string): Promise<Registration | null> {
+  const sql = db();
+  const [registration] = await sql<Registration[]>`
+    SELECT ${REGISTRATION_COLUMNS(sql)} FROM registrations WHERE session_id = ${sessionId}`;
+  return registration ?? null;
+}
+
+export async function addRegistration(registration: Registration) {
+  const sql = db();
+  await sql`INSERT INTO registrations ${sql(registration)} ON CONFLICT (session_id) DO NOTHING`;
+}
+
+// Dashboard overview
+
+export type OverviewStats = {
+  revenue: number;
+  registrations: number;
+  paidOrders: number;
+  pendingOrders: number;
+  messages: number;
+  visitsWeek: number;
+  visitsTotal: number;
+};
+
+// Revenue counts every registration (Payment Link and site checkout payments both create one)
+// plus paid orders that have no registration yet, so no payment is counted twice.
+export async function getOverviewStats(): Promise<OverviewStats> {
+  const sql = db();
+  const [stats] = await sql<OverviewStats[]>`
+    SELECT
+      ((SELECT coalesce(sum(amount_paid), 0) FROM registrations)
+        + (SELECT coalesce(sum(price), 0) FROM orders o
+           WHERE status = 'paid' AND NOT EXISTS (SELECT 1 FROM registrations r WHERE r.session_id = o.session_id))
+      )::float8 AS "revenue",
+      (SELECT count(*) FROM registrations)::int AS "registrations",
+      (SELECT count(*) FROM orders WHERE status = 'paid')::int AS "paidOrders",
+      (SELECT count(*) FROM orders WHERE status = 'pending')::int AS "pendingOrders",
+      (SELECT count(*) FROM messages)::int AS "messages",
+      (SELECT count(*) FROM traffic WHERE "timestamp" >= now() - interval '7 days')::int AS "visitsWeek",
+      (SELECT count(*) FROM traffic)::int AS "visitsTotal"`;
+  return stats;
 }

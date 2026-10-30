@@ -6,11 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:migrate": "node --env-file=.env.local scripts/migrate.mjs",
+    "admin:password": "node scripts/set-admin-password.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "next": "16.4.2",
+    "postgres": "^3.4.5",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },

@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
-  return <SiteDocument bodyClass="body-bg">{children}</SiteDocument>;
+  return <SiteDocument>{children}</SiteDocument>;
 }

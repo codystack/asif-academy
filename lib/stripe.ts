@@ -7,6 +7,10 @@ export type CheckoutSession = {
   id: string;
   url: string | null;
   payment_status: "paid" | "unpaid" | "no_payment_required";
+  amount_total?: number | null;
+  currency?: string | null;
+  metadata?: Record<string, string>;
+  customer_details?: { email?: string | null; name?: string | null; phone?: string | null } | null;
 };
 
 async function stripeRequest<T>(method: "GET" | "POST", path: string, params?: Record<string, string>): Promise<T> {
@@ -29,6 +33,7 @@ async function stripeRequest<T>(method: "GET" | "POST", path: string, params?: R
 export function createCheckoutSession(options: {
   name: string;
   description: string;
+  currency?: string;
   unitAmount: number;
   successUrl: string;
   cancelUrl: string;
@@ -36,7 +41,7 @@ export function createCheckoutSession(options: {
 }) {
   const params: Record<string, string> = {
     "payment_method_types[0]": "card",
-    "line_items[0][price_data][currency]": "usd",
+    "line_items[0][price_data][currency]": options.currency ?? "usd",
     "line_items[0][price_data][unit_amount]": String(options.unitAmount),
     "line_items[0][price_data][product_data][name]": options.name,
     "line_items[0][price_data][product_data][description]": options.description,
