@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Modal from "@/components/admin/Modal";
 import { formatTimestamp } from "@/lib/format";
+import EmptyState from "@/components/admin/EmptyState";
 
 export type RegistrationRow = {
   session_id: string;
@@ -43,8 +44,10 @@ export default function RegistrationsTable({
             <tbody>
               {registrations.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="admin-empty">
-                    No registrations yet.
+                  <td colSpan={5} className="admin-empty-cell">
+                    <EmptyState icon="registrations" title="No registrations yet">
+                      Enrolment forms submitted after payment will appear here.
+                    </EmptyState>
                   </td>
                 </tr>
               )}

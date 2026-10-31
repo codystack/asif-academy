@@ -2,8 +2,8 @@ import { SITE_NAME } from "@/lib/config";
 import MainNav from "./MainNav";
 import { SOCIAL_LINKS } from "./socialLinks";
 
-// `light` applies the tp-home-light styles, which only target elements inside <header>.
-export default function SiteHeader({ light = false }: { light?: boolean }) {
+// tp-home-light gives the white sticky header; its styles only target elements inside <header>.
+export default function SiteHeader() {
   return (
     <>
       {/* back to top start */}
@@ -59,7 +59,7 @@ export default function SiteHeader({ light = false }: { light?: boolean }) {
       </div>
       <div className="tp-offcanvas-overlay"></div>
       {/* tp-offcanvas end */}
-      <header className={light ? "tp-home-light" : undefined}>
+      <header className="tp-home-light">
         {/* header-area-start */}
         <div id="header-sticky" className="tp-header-area tp-header-bg tp-header-lg-spacing tp-transparent">
           <div className="container">

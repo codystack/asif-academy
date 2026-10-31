@@ -1,5 +1,5 @@
 import "server-only";
-import { STRIPE_SECRET_KEY } from "./config";
+import { STRIPE_HISTORY_START, STRIPE_SECRET_KEY } from "./config";
 
 // Minimal Stripe REST client covering the Checkout calls this site makes.
 
@@ -85,7 +85,9 @@ export async function listCheckoutSessions(options: {
   if (options.expandLineItems) params["expand[0]"] = "data.line_items";
   if (options.startingAfter) params.starting_after = options.startingAfter;
   else if (options.endingBefore) params.ending_before = options.endingBefore;
-  if (options.createdSince) params["created[gte]"] = String(Math.floor(options.createdSince.getTime() / 1000));
+  // Never list anything from before the admin's history start (see STRIPE_HISTORY_START).
+  const since = Math.max(options.createdSince?.getTime() ?? 0, STRIPE_HISTORY_START.getTime() || 0);
+  if (since) params["created[gte]"] = String(Math.floor(since / 1000));
   const list = await stripeRequest<{ data: ListedSession[]; has_more: boolean }>("GET", "checkout/sessions", params);
   return { sessions: list.data, hasMore: list.has_more };
 }

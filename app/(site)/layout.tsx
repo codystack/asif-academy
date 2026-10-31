@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import SiteDocument from "@/components/site/SiteDocument";
+import SiteHeader from "@/components/site/SiteHeader";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_SLOGAN } from "@/lib/config";
 
 export const metadata: Metadata = {
@@ -8,5 +9,10 @@ export const metadata: Metadata = {
 };
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
-  return <SiteDocument>{children}</SiteDocument>;
+  return (
+    <SiteDocument>
+      <SiteHeader />
+      <main>{children}</main>
+    </SiteDocument>
+  );
 }

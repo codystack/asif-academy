@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageHeader from "@/components/admin/PageHeader";
 import { getTraffic } from "@/lib/data";
 import { formatTimestamp } from "@/lib/format";
+import EmptyState from "@/components/admin/EmptyState";
 
 export const metadata: Metadata = { title: "Traffic" };
 
@@ -25,8 +26,8 @@ export default async function AdminTrafficPage() {
             <tbody>
               {traffic.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="admin-empty">
-                    No visits recorded yet.
+                  <td colSpan={4} className="admin-empty-cell">
+                    <EmptyState icon="traffic" title="No visits yet">Page views on the site will appear here.</EmptyState>
                   </td>
                 </tr>
               )}

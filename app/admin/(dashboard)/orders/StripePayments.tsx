@@ -3,6 +3,7 @@ import CursorPagination from "@/components/admin/CursorPagination";
 import { getRegisteredSessionIds } from "@/lib/data";
 import { formatCurrency, formatUnixTime } from "@/lib/format";
 import { listCheckoutSessions, type ListedSession } from "@/lib/stripe";
+import EmptyState from "@/components/admin/EmptyState";
 
 const PAGE_SIZE = 20;
 
@@ -46,8 +47,12 @@ export default async function StripePayments({ after, before }: { after?: string
           <tbody>
             {sessions.length === 0 && (
               <tr>
-                <td colSpan={6} className="admin-empty">
-                  {error ?? "No payments yet."}
+                <td colSpan={6} className="admin-empty-cell">
+                  {error ? (
+                    <EmptyState icon="error" title="Payments unavailable">{error}</EmptyState>
+                  ) : (
+                    <EmptyState icon="payments" title="No payments yet">Completed Stripe payments will appear here.</EmptyState>
+                  )}
                 </td>
               </tr>
             )}

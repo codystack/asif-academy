@@ -10,6 +10,7 @@ import {
 } from "@/lib/data";
 import { formatCurrency, formatTimestamp } from "@/lib/format";
 import { listCheckoutSessions } from "@/lib/stripe";
+import EmptyState from "@/components/admin/EmptyState";
 
 // Count and total of Stripe checkouts in the last 30 days. Stripe returns at most 100 per call, so "more" means 100+.
 async function stripeLast30Days(status: "complete" | "expired") {
@@ -96,7 +97,7 @@ export default async function AdminOverviewPage() {
               ))}
             </ul>
           ) : (
-            <p className="admin-empty">No registrations yet.</p>
+            <EmptyState icon="registrations" title="No registrations yet" />
           )}
         </div>
 
@@ -120,7 +121,7 @@ export default async function AdminOverviewPage() {
               ))}
             </ul>
           ) : (
-            <p className="admin-empty">No messages yet.</p>
+            <EmptyState icon="messages" title="No messages yet" />
           )}
         </div>
 
@@ -144,7 +145,7 @@ export default async function AdminOverviewPage() {
               ))}
             </ul>
           ) : (
-            <p className="admin-empty">No visits recorded yet.</p>
+            <EmptyState icon="traffic" title="No visits yet" />
           )}
         </div>
 
@@ -167,7 +168,7 @@ export default async function AdminOverviewPage() {
               ))}
             </ul>
           ) : (
-            <p className="admin-empty">No visits recorded yet.</p>
+            <EmptyState icon="traffic" title="No visits yet" />
           )}
         </div>
       </section>

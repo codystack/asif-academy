@@ -350,12 +350,47 @@ h3 {
     background: var(--admin-primary);
 }
 
-.admin-empty {
-    margin: 0;
-    padding: 24px 0;
-    color: var(--admin-muted);
-    font-size: .9rem;
+.admin-empty-cell {
+    padding: 0 !important;
+}
+
+.admin-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 40px 16px;
     text-align: center;
+}
+
+.admin-empty-icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 6px;
+    border-radius: 50%;
+    background: var(--admin-primary-soft);
+    color: var(--admin-primary);
+}
+
+.admin-empty-state.is-error .admin-empty-icon {
+    background: #fdecec;
+    color: #b42318;
+}
+
+.admin-empty-title {
+    margin: 0;
+    color: var(--admin-ink);
+    font-weight: 600;
+    font-size: .95rem;
+}
+
+.admin-empty-text {
+    margin: 0;
+    max-width: 340px;
+    color: var(--admin-muted);
+    font-size: .85rem;
 }
 
 /* Tables */

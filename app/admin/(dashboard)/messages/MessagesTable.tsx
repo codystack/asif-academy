@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Modal from "@/components/admin/Modal";
 import { formatTimestamp } from "@/lib/format";
+import EmptyState from "@/components/admin/EmptyState";
 
 export type MessageRow = {
   id: number;
@@ -35,8 +36,8 @@ export default function MessagesTable({ messages, children }: { messages: Messag
             <tbody>
               {messages.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="admin-empty">
-                    No messages yet. Enquiries from the contact page will appear here.
+                  <td colSpan={5} className="admin-empty-cell">
+                    <EmptyState icon="messages" title="No messages yet">Enquiries from the contact page will appear here.</EmptyState>
                   </td>
                 </tr>
               )}

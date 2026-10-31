@@ -5,6 +5,7 @@ import PageHeader from "@/components/admin/PageHeader";
 import { SITE_NAME } from "@/lib/config";
 import { formatCurrency, formatUnixTime } from "@/lib/format";
 import { listCheckoutSessions, type ListedSession } from "@/lib/stripe";
+import EmptyState from "@/components/admin/EmptyState";
 
 export const metadata: Metadata = { title: "Abandoned checkouts" };
 
@@ -56,8 +57,14 @@ export default async function AdminAbandonedPage({ searchParams }: { searchParam
             <tbody>
               {sessions.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="admin-empty">
-                    {error ?? "No abandoned checkouts."}
+                  <td colSpan={5} className="admin-empty-cell">
+                    {error ? (
+                      <EmptyState icon="error" title="Checkouts unavailable">{error}</EmptyState>
+                    ) : (
+                      <EmptyState icon="abandoned" title="No abandoned checkouts">
+                        Checkouts that expire without payment will appear here.
+                      </EmptyState>
+                    )}
                   </td>
                 </tr>
               )}
