@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
+import { JsonLd, pageMetadata, SITE_ORIGIN } from "@/lib/seo";
 import Highlight from "@/components/site/Highlight";
-import { SITE_NAME } from "@/lib/config";
 import { COURSES } from "@/lib/courses";
 import { SIP_AND_SEW } from "@/lib/programmes";
 import { logTraffic } from "@/lib/traffic";
 
-export const metadata: Metadata = {
-  title: `Courses — ${SITE_NAME}`,
+export const metadata: Metadata = pageMetadata({
+  title: "Courses",
   description:
-    "Sewing and fashion courses at Asif Fashion Academy in Milton Keynes: beginners sewing, intensive fashion training, advanced masterclasses and Sip & Sew workshops.",
-};
+    "Sewing and fashion courses in Milton Keynes: Beginners Sewing Course, Intensive Fashion Training, Advanced Training & Masterclasses, and Sip & Sew workshops.",
+  path: "/courses",
+});
 
 const CheckIcon = () => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -18,11 +19,41 @@ const CheckIcon = () => (
   </svg>
 );
 
+// Lets search engines list each course with its provider and fee.
+const coursesSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  itemListElement: COURSES.map(({ programme, tagline }, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    item: {
+      "@type": "Course",
+      name: programme.name,
+      description: `${tagline} ${programme.summary}`,
+      url: `${SITE_ORIGIN}/courses#${programme.id}`,
+      provider: { "@type": "EducationalOrganization", name: "Asif Fashion Academy", sameAs: SITE_ORIGIN },
+      offers: {
+        "@type": "Offer",
+        price: (programme.amountPence / 100).toFixed(2),
+        priceCurrency: "GBP",
+        category: "Paid",
+        url: `${SITE_ORIGIN}/pricing`,
+      },
+      hasCourseInstance: {
+        "@type": "CourseInstance",
+        courseMode: "Onsite",
+        location: { "@type": "Place", name: "Asif Fashion Academy", address: "Milton Keynes, United Kingdom" },
+      },
+    },
+  })),
+};
+
 export default async function CoursesPage() {
   await logTraffic("courses");
 
   return (
     <>
+      <JsonLd data={coursesSchema} />
       <section className="tp-courses-fit-hero text-center">
         <div className="container">
           <span className="tp-hero-fit-badge">Courses &amp; Workshops</span>

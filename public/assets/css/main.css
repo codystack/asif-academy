@@ -10232,7 +10232,7 @@ input[type=color] {
   padding-top: 170px;
   padding-bottom: 60px;
   overflow: hidden;
-  background: #f8f9fa;
+  background: var(--tp-common-white);
 }
 .tp-hero-fit-badge {
   display: inline-flex;
@@ -12125,5 +12125,819 @@ body:has(.tp-pricing-fit) {
     margin: 0 10px 24px;
     padding: 60px 0;
     border-radius: 28px;
+  }
+}
+
+/*----------------------------------------*/
+/*  Home: course picker with a zipper edge
+/*----------------------------------------*/
+.tp-picker-fit {
+  position: relative;
+  overflow-x: clip;
+  padding: 170px 0 130px;
+  background: var(--tp-common-white);
+  font-family: var(--tp-ff-bricolage);
+}
+/* Zipper straddling the seam between the hero and this section */
+.tp-picker-fit-zip {
+  position: absolute;
+  top: -22px;
+  left: 0;
+  right: 0;
+  height: 44px;
+  z-index: 2;
+}
+/* The zipper is closed from --zip-open onwards; the open end fills the space before it */
+.tp-picker-fit-zip {
+  --zip-open: 260px;
+}
+.tp-picker-fit-teeth {
+  display: block;
+  width: calc(100% - var(--zip-open));
+  margin-left: var(--zip-open);
+  fill: #5a189a;
+}
+.tp-picker-fit-open {
+  position: absolute;
+  top: -48px;
+  left: 0;
+  width: var(--zip-open);
+  overflow: visible;
+  fill: #5a189a;
+}
+.tp-picker-fit-tape {
+  fill: #d9c3f0;
+}
+.tp-picker-fit-slider {
+  position: absolute;
+  top: -8px;
+  left: calc(var(--zip-open) - 29px);
+  fill: #3c096c;
+  filter: drop-shadow(0 6px 10px rgba(60, 9, 108, 0.25));
+}
+.tp-picker-fit-pull {
+  fill: #5a189a;
+}
+.tp-picker-fit-pull-hole {
+  fill: var(--tp-common-white);
+}
+.tp-picker-fit-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 60px;
+}
+.tp-picker-fit-head .tp-about-fit-heading {
+  margin-bottom: 0;
+}
+.tp-picker-fit-head .tp-hero-fit-btn {
+  flex: none;
+}
+.tp-picker-fit-controls {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 64px;
+}
+/* Carousel: a scroll-snapping row showing two and a half cards (one and a half on tablets, one plus a peek on phones),
+   so the cut-off card signals there's more to scroll */
+/* The container is a size container so cards can be sized against the content width (cqw)
+   while the track itself runs across the full screen width. */
+.tp-picker-fit .tp-about-fit-container {
+  container-type: inline-size;
+}
+.tp-picker-fit-track {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  /* Runs edge to edge across the screen; the side padding (the page margin) keeps the first and last
+     cards in line with the content, and scroll-padding makes each slide stop there too. */
+  --bleed: calc((100vw - 100cqw) / 2);
+  padding: 8px var(--bleed) 16px;
+  margin: -8px calc(var(--bleed) * -1) -16px;
+  scroll-padding-inline: var(--bleed);
+}
+.tp-picker-fit-track::-webkit-scrollbar {
+  display: none;
+}
+.tp-picker-fit-track > .tp-picker-fit-card {
+  /* The visible run is the content width plus the right-hand page margin: (100vw + 100cqw) / 2 */
+  flex: 0 0 calc(((100vw + 100cqw) / 2 - 48px) / 2.5);
+  scroll-snap-align: start;
+}
+.tp-carousel-arrows {
+  display: flex;
+  gap: 12px;
+}
+.tp-carousel-arrows button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border: 2px solid #14201a;
+  border-radius: 50%;
+  background: var(--tp-common-white);
+  color: #14201a;
+  box-shadow: 0 4px 0 #14201a;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+.tp-carousel-arrows button:hover:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #14201a;
+}
+.tp-carousel-arrows button:focus-visible {
+  outline: 3px solid #5a189a;
+  outline-offset: 3px;
+}
+.tp-carousel-arrows button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.tp-picker-fit-card {
+  display: flex;
+  flex-direction: column;
+  padding: 26px;
+  border-radius: 26px;
+  background: var(--tp-about-fill);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.tp-picker-fit-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 36px rgba(60, 9, 108, 0.12);
+}
+.tp-picker-fit-card .tp-about-fit-step-num {
+  margin-bottom: 26px;
+  background: var(--tp-common-white);
+}
+.tp-picker-fit-card h3 {
+  margin-bottom: 10px;
+  font-family: inherit;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #14201a;
+}
+.tp-picker-fit-card p {
+  display: -webkit-box;
+  margin-bottom: 26px;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #3d4a43;
+}
+.tp-picker-fit-img {
+  height: 300px;
+  margin-top: auto;
+  overflow: hidden;
+  border-radius: 18px;
+}
+.tp-picker-fit-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.tp-picker-fit-card:hover .tp-picker-fit-img img {
+  transform: scale(1.05);
+}
+@media (max-width: 1199px) {
+  .tp-picker-fit-track > .tp-picker-fit-card {
+    flex-basis: calc(((100vw + 100cqw) / 2 - 24px) / 1.5);
+  }
+  .tp-picker-fit-img {
+    height: 280px;
+  }
+}
+@media (max-width: 767px) {
+  .tp-picker-fit {
+    padding: 130px 0 80px;
+  }
+  .tp-picker-fit-zip {
+    --zip-open: 150px;
+  }
+  .tp-picker-fit-slider {
+    transform: scale(0.8);
+    transform-origin: top center;
+  }
+  .tp-picker-fit-head {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 40px;
+  }
+  .tp-picker-fit-track > .tp-picker-fit-card {
+    flex-basis: 86cqw;
+  }
+  .tp-picker-fit-img {
+    height: 240px;
+  }
+}
+
+/*----------------------------------------*/
+/*  Home: welcome section after the hero
+/*----------------------------------------*/
+.tp-welcome-fit {
+  overflow: hidden;
+  padding: 130px 0 150px;
+  background: #efe6f9;
+  font-family: var(--tp-ff-bricolage);
+}
+.tp-welcome-fit-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 80px;
+  align-items: center;
+}
+.tp-welcome-fit-img {
+  height: 640px;
+  overflow: hidden;
+  border-radius: 28px;
+}
+.tp-welcome-fit-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.tp-welcome-fit .tp-about-fit-heading {
+  margin-bottom: 36px;
+  font-size: 56px;
+}
+.tp-welcome-fit-text p {
+  margin-bottom: 14px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: #3d4a43;
+}
+.tp-welcome-fit-text p:first-child {
+  font-size: 20px;
+  font-weight: 600;
+  color: #14201a;
+}
+.tp-welcome-fit-btns {
+  display: flex;
+  margin-top: 36px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.tp-welcome-fit .tp-hero-fit-btn-outline {
+  background: var(--tp-common-white);
+}
+@media (max-width: 1199px) {
+  .tp-welcome-fit-grid {
+    gap: 50px;
+  }
+  .tp-welcome-fit .tp-about-fit-heading {
+    font-size: 46px;
+  }
+}
+@media (max-width: 991px) {
+  .tp-welcome-fit {
+    padding: 100px 0 120px;
+  }
+  .tp-welcome-fit-grid {
+    grid-template-columns: 1fr;
+  }
+  .tp-welcome-fit-img {
+    height: 460px;
+  }
+}
+@media (max-width: 767px) {
+  .tp-welcome-fit {
+    padding: 70px 0 100px;
+  }
+  .tp-welcome-fit-img {
+    height: 360px;
+    border-radius: 22px;
+  }
+  .tp-welcome-fit .tp-about-fit-heading {
+    font-size: 36px;
+  }
+  .tp-welcome-fit-text p {
+    font-size: 16px;
+  }
+  .tp-welcome-fit-text p:first-child {
+    font-size: 18px;
+  }
+}
+
+/*----------------------------------------*/
+/*  Home: who can learn (dark card over a tilted photo)
+/*----------------------------------------*/
+.tp-who-fit {
+  overflow: hidden;
+  padding: 130px 0 150px;
+  background: #f8f9fa;
+  font-family: var(--tp-ff-bricolage);
+}
+.tp-who-fit-intro {
+  max-width: 760px;
+  margin: 0 auto 70px;
+}
+.tp-who-fit-intro .tp-about-fit-heading {
+  margin-bottom: 26px;
+}
+.tp-who-fit-intro .tp-about-fit-lead {
+  margin-bottom: 34px;
+}
+.tp-who-fit-stage {
+  position: relative;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 40px 0;
+}
+.tp-who-fit-card {
+  position: relative;
+  z-index: 2;
+  width: 58%;
+  padding: 48px 48px 40px;
+  border-radius: 30px;
+  background: #14201a;
+  box-shadow: 0 30px 60px rgba(20, 32, 26, 0.2);
+}
+.tp-who-fit-card ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tp-who-fit-card li {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.tp-who-fit-card li:first-child {
+  padding-top: 0;
+}
+/* Numbers alternate sides, like a stats list */
+.tp-who-fit-card li:nth-child(even) {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+.tp-who-fit-num {
+  flex: none;
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #f1e8fb;
+}
+.tp-who-fit-card li:nth-child(even) .tp-who-fit-num {
+  color: #f7cdb0;
+}
+.tp-who-fit-text {
+  flex: 1;
+  font-size: 17px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.82);
+}
+.tp-who-fit-note {
+  position: relative;
+  margin: 32px 0 0;
+  padding: 16px 22px 16px 40px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.07);
+  font-size: 15px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.78);
+}
+.tp-who-fit-note::before {
+  content: "";
+  position: absolute;
+  top: 24px;
+  left: 20px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--tp-theme-1);
+}
+.tp-who-fit-img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 50%;
+  overflow: hidden;
+  border-radius: 30px;
+  transform: rotate(3deg);
+  box-shadow: 0 24px 50px rgba(20, 32, 26, 0.15);
+}
+.tp-who-fit-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+@media (max-width: 1199px) {
+  .tp-who-fit-card {
+    width: 62%;
+    padding: 40px 36px 34px;
+  }
+  .tp-who-fit-num {
+    font-size: 44px;
+  }
+}
+@media (max-width: 991px) {
+  .tp-who-fit {
+    padding: 100px 0 110px;
+  }
+  .tp-who-fit-stage {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 0;
+  }
+  .tp-who-fit-card {
+    width: 100%;
+  }
+  .tp-who-fit-img {
+    position: relative;
+    height: 420px;
+    transform: none;
+    width: 100%;
+  }
+}
+@media (max-width: 767px) {
+  .tp-who-fit {
+    padding: 80px 0 90px;
+  }
+  .tp-who-fit-intro {
+    margin-bottom: 44px;
+  }
+  .tp-who-fit-card {
+    padding: 30px 22px 26px;
+    border-radius: 24px;
+  }
+  .tp-who-fit-card li {
+    gap: 18px;
+    padding: 16px 0;
+  }
+  .tp-who-fit-num {
+    font-size: 34px;
+  }
+  .tp-who-fit-text {
+    font-size: 15px;
+  }
+  .tp-who-fit-img {
+    height: 320px;
+    border-radius: 24px;
+  }
+}
+
+/*----------------------------------------*/
+/*  Home: studio videos (portrait cards on a purple band)
+/*----------------------------------------*/
+.tp-videos-fit {
+  overflow: hidden;
+  padding: 120px 0 130px;
+  background: #efe6f9;
+  font-family: var(--tp-ff-bricolage);
+}
+.tp-videos-fit-intro {
+  max-width: 700px;
+  margin: 0 auto 60px;
+}
+.tp-videos-fit .tp-about-fit-heading {
+  margin-bottom: 22px;
+}
+.tp-videos-fit-grid {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+.tp-videos-fit-card {
+  width: 340px;
+  margin: 0;
+}
+.tp-videos-fit-card:nth-child(1) {
+  transform: rotate(-3deg);
+}
+.tp-videos-fit-card:nth-child(2) {
+  transform: rotate(3deg) translateY(30px);
+}
+.tp-videos-fit-frame {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border: 6px solid var(--tp-common-white);
+  border-radius: 30px;
+  background: #14201a;
+  box-shadow: 0 30px 60px rgba(60, 9, 108, 0.2);
+}
+.tp-videos-fit-frame video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.tp-videos-fit-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  padding-left: 6px;
+  border-radius: 50%;
+  background: var(--tp-theme-1);
+  color: var(--tp-common-white);
+  box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.25);
+  transform: translate(-50%, -50%);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.tp-videos-fit-play:hover {
+  transform: translate(-50%, -50%) scale(1.06);
+  box-shadow: 0 0 0 14px rgba(255, 255, 255, 0.3);
+}
+.tp-videos-fit-play:focus-visible {
+  outline: 3px solid var(--tp-common-white);
+  outline-offset: 6px;
+}
+.tp-videos-fit-card figcaption {
+  margin-top: 18px;
+  text-align: center;
+  color: #14201a;
+  font-size: 18px;
+  font-weight: 600;
+}
+@media (max-width: 767px) {
+  .tp-videos-fit {
+    padding: 80px 0 90px;
+  }
+  .tp-videos-fit-intro {
+    margin-bottom: 40px;
+  }
+  .tp-videos-fit-grid {
+    gap: 14px;
+  }
+  .tp-videos-fit-card,
+  .tp-videos-fit-card:nth-child(1),
+  .tp-videos-fit-card:nth-child(2) {
+    width: 50%;
+    transform: none;
+  }
+  .tp-videos-fit-frame {
+    border-width: 4px;
+    border-radius: 20px;
+  }
+  .tp-videos-fit-play {
+    width: 56px;
+    height: 56px;
+    box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.25);
+  }
+  .tp-videos-fit-play svg {
+    width: 20px;
+    height: 22px;
+  }
+  .tp-videos-fit-card figcaption {
+    font-size: 15px;
+  }
+}
+
+/*----------------------------------------*/
+/*  Home: your journey with AFA (tilted step cards)
+/*----------------------------------------*/
+.tp-journey-fit {
+  overflow: hidden;
+  padding: 130px 0 140px;
+  background: #fbf3ee;
+  font-family: var(--tp-ff-bricolage);
+}
+.tp-journey-fit-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 70px;
+  align-items: start;
+}
+.tp-journey-fit-side {
+  position: sticky;
+  top: 120px;
+}
+.tp-journey-fit .tp-about-fit-heading {
+  margin-bottom: 24px;
+}
+.tp-journey-fit-lead {
+  max-width: 420px;
+  margin-bottom: 44px;
+  font-size: 19px;
+  line-height: 1.6;
+  color: #3d4a43;
+}
+.tp-journey-fit-img {
+  height: 600px;
+  overflow: hidden;
+  border-radius: 28px;
+}
+.tp-journey-fit-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.tp-journey-fit-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tp-journey-fit-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+  padding: 32px 36px;
+  border: 1px solid rgba(20, 32, 26, 0.1);
+  border-radius: 24px;
+  background: var(--tp-common-white);
+  box-shadow: 0 14px 30px rgba(60, 9, 108, 0.06);
+  transition: transform 0.25s ease;
+}
+/* Gentle alternating tilt, like cards dropped on a table */
+.tp-journey-fit-step:nth-child(odd) {
+  transform: rotate(1deg);
+}
+.tp-journey-fit-step:nth-child(even) {
+  transform: rotate(-1deg);
+}
+.tp-journey-fit-step:hover {
+  transform: rotate(0deg) translateY(-3px);
+}
+.tp-journey-fit-step .tp-about-fit-step-num {
+  flex: none;
+  width: 58px;
+  height: 58px;
+  margin-bottom: 0;
+  font-size: 20px;
+}
+.tp-journey-fit-step h3 {
+  margin: 2px 0 8px;
+  font-family: inherit;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: #14201a;
+}
+.tp-journey-fit-step p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.55;
+  color: #3d4a43;
+}
+@media (max-width: 991px) {
+  .tp-journey-fit {
+    padding: 100px 0 110px;
+  }
+  .tp-journey-fit-grid {
+    grid-template-columns: 1fr;
+    gap: 50px;
+  }
+  .tp-journey-fit-side {
+    position: static;
+  }
+  .tp-journey-fit-img {
+    height: 480px;
+  }
+}
+@media (max-width: 767px) {
+  .tp-journey-fit {
+    padding: 80px 0 90px;
+  }
+  .tp-journey-fit-img {
+    height: 380px;
+    border-radius: 22px;
+  }
+  .tp-journey-fit-step {
+    gap: 18px;
+    padding: 24px 20px;
+  }
+  .tp-journey-fit-step .tp-about-fit-step-num {
+    width: 48px;
+    height: 48px;
+    font-size: 17px;
+  }
+  .tp-journey-fit-step h3 {
+    font-size: 22px;
+  }
+  .tp-journey-fit-step p {
+    font-size: 16px;
+  }
+}
+
+/*----------------------------------------*/
+/*  Home: why choose AFA (icon cards)
+/*----------------------------------------*/
+.tp-why-fit {
+  overflow: hidden;
+  padding: 130px 0 140px;
+  background: #f8f9fa;
+  font-family: var(--tp-ff-bricolage);
+}
+.tp-why-fit-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 60px;
+}
+.tp-why-fit-head .tp-about-fit-heading {
+  margin-bottom: 0;
+}
+.tp-why-fit-head .tp-hero-fit-btn {
+  flex: none;
+}
+.tp-why-fit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+.tp-why-fit-card {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding: 34px 36px;
+  border: 1px solid rgba(20, 32, 26, 0.12);
+  border-radius: 26px;
+  background: var(--tp-common-white);
+}
+.tp-why-fit-card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+/* Raised square icon chip in the card's palette colour */
+.tp-why-fit-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+  height: 76px;
+  border: 1.5px solid var(--tp-about-edge);
+  border-radius: 16px;
+  background: var(--tp-about-fill);
+  box-shadow: 5px 6px 0 var(--tp-about-edge);
+  color: #14201a;
+}
+.tp-why-fit-card h3 {
+  margin-bottom: 8px;
+  font-family: inherit;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: #14201a;
+}
+.tp-why-fit-card p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: #3d4a43;
+}
+@media (max-width: 1199px) {
+  .tp-why-fit-card h3 {
+    font-size: 25px;
+  }
+}
+@media (max-width: 991px) {
+  .tp-why-fit {
+    padding: 100px 0 110px;
+  }
+  .tp-why-fit-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 767px) {
+  .tp-why-fit {
+    padding: 80px 0 90px;
+  }
+  .tp-why-fit-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 28px;
+    margin-bottom: 40px;
+  }
+  .tp-why-fit-card {
+    align-items: flex-start;
+    gap: 20px;
+    padding: 26px 22px;
+  }
+  .tp-why-fit-icon {
+    width: 58px;
+    height: 58px;  }
+  .tp-why-fit-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+  .tp-why-fit-card h3 {
+    font-size: 21px;
+  }
+  .tp-why-fit-card p {
+    font-size: 16px;
   }
 }

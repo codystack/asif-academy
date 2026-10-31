@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { SITE_NAME } from "@/lib/config";
 import { getOrders, recordOrder, removeAbandonedCart, updateOrderStatus } from "@/lib/data";
 import { timestamp } from "@/lib/format";
 import { findPaidProgramme } from "@/lib/programmePayment";
@@ -9,7 +8,8 @@ import { retrieveCheckoutSession } from "@/lib/stripe";
 import { clientIp, logTraffic } from "@/lib/traffic";
 
 export const metadata: Metadata = {
-  title: `Thank You — ${SITE_NAME}`,
+  title: "Payment Status",
+  robots: { index: false, follow: false },
 };
 
 // Paid programme and workshop payments redirect to /enrol before reaching these, so "paid" here means any other paid session.

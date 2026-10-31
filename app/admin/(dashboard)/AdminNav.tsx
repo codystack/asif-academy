@@ -10,7 +10,6 @@ const ICONS = {
   payments: <path d="M2 7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zM2 10h20M6 15h4" />,
   registrations: <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M19 8v6M22 11h-6" />,
   messages: <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />,
-  traffic: <path d="M3 3v18h18M7 15l4-4 3 3 6-6" />,
   abandoned: <path d="M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2M20 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6" />,
   site: <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3" />,
   logout: <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />,
@@ -29,7 +28,6 @@ const LINKS = [
   { href: "/admin/orders", label: "Payments", icon: "payments" },
   { href: "/admin/registrations", label: "Registrations", icon: "registrations" },
   { href: "/admin/messages", label: "Messages", icon: "messages" },
-  { href: "/admin/traffic", label: "Traffic", icon: "traffic" },
   { href: "/admin/abandoned", label: "Abandoned", icon: "abandoned" },
 ] as const;
 

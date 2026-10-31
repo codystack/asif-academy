@@ -1,13 +1,7 @@
 import Link from "next/link";
 import { unstable_rethrow } from "next/navigation";
 import PageHeader from "@/components/admin/PageHeader";
-import {
-  getMessages,
-  getOverviewStats,
-  getRecentRegistrations,
-  getRecentTraffic,
-  getTrafficCounts,
-} from "@/lib/data";
+import { getMessages, getOverviewStats, getRecentRegistrations } from "@/lib/data";
 import { formatCurrency, formatTimestamp } from "@/lib/format";
 import { listCheckoutSessions } from "@/lib/stripe";
 import EmptyState from "@/components/admin/EmptyState";
@@ -34,30 +28,25 @@ function stripeMetric(label: string, summary: Awaited<ReturnType<typeof stripeLa
 }
 
 export default async function AdminOverviewPage() {
-  const [stats, paid, abandoned, registrations, messages, trafficCounts, recentTraffic] = await Promise.all([
+  const [stats, paid, abandoned, registrations, messages] = await Promise.all([
     getOverviewStats(),
     stripeLast30Days("complete"),
     stripeLast30Days("expired"),
     getRecentRegistrations(5),
     getMessages(5),
-    getTrafficCounts(),
-    getRecentTraffic(6),
   ]);
-  const topPages = Object.entries(trafficCounts).slice(0, 5);
-  const topCount = topPages[0]?.[1] ?? 0;
 
   const metrics = [
     { label: "Revenue", value: formatCurrency(stats.revenue), note: "Registrations and paid orders" },
-    { label: "Registrations", value: stats.registrations, note: "Enrolment forms submitted" },
     stripeMetric("Payments", paid, "received"),
-    { label: "Messages", value: stats.messages, note: "From the contact form" },
-    { label: "Visits this week", value: stats.visitsWeek, note: `${stats.visitsTotal.toLocaleString("en-GB")} all time` },
     stripeMetric("Abandoned checkouts", abandoned, "not completed"),
+    { label: "Registrations", value: stats.registrations, note: "Enrolment forms submitted" },
+    { label: "Messages", value: stats.messages, note: "From the contact form" },
   ];
 
   return (
     <>
-      <PageHeader eyebrow="Welcome back" title="Overview" description="Sales, enrolments, enquiries and traffic at a glance.">
+      <PageHeader eyebrow="Welcome back" title="Overview" description="Sales, enrolments and enquiries at a glance.">
         <Link className="btn-primary" href="/admin/registrations">
           View registrations
         </Link>
@@ -122,53 +111,6 @@ export default async function AdminOverviewPage() {
             </ul>
           ) : (
             <EmptyState icon="messages" title="No messages yet" />
-          )}
-        </div>
-
-        <div className="admin-card">
-          <div className="admin-card-header">
-            <h3>Top pages</h3>
-            <Link href="/admin/traffic">View traffic</Link>
-          </div>
-          {topPages.length ? (
-            <ul className="admin-bars">
-              {topPages.map(([page, count]) => (
-                <li key={page}>
-                  <div className="admin-bar-label">
-                    <span>{page}</span>
-                    <strong>{count.toLocaleString("en-GB")}</strong>
-                  </div>
-                  <div className="admin-bar">
-                    <div style={{ width: `${(count / topCount) * 100}%` }} />
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <EmptyState icon="traffic" title="No visits yet" />
-          )}
-        </div>
-
-        <div className="admin-card">
-          <div className="admin-card-header">
-            <h3>Recent visits</h3>
-          </div>
-          {recentTraffic.length ? (
-            <ul className="admin-list">
-              {recentTraffic.map((visit, i) => (
-                <li key={i}>
-                  <div>
-                    <strong>{visit.page}</strong>
-                    <span>{visit.ip}</span>
-                  </div>
-                  <div className="admin-list-meta">
-                    <span>{formatTimestamp(visit.timestamp)}</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <EmptyState icon="traffic" title="No visits yet" />
           )}
         </div>
       </section>
