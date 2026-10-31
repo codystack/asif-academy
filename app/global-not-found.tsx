@@ -4,7 +4,7 @@ import SiteHeader from "@/components/site/SiteHeader";
 import { SITE_NAME } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: `Page Not Found — ${SITE_NAME}`,
+  title: `Page Not Found | ${SITE_NAME}`,
 };
 
 // Replaces error.php. Needed because the app has two root layouts (site and admin).

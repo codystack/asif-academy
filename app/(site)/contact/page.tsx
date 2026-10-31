@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import ContactForm from "./ContactForm";
-import { SITE_NAME } from "@/lib/config";
 import { PROGRAMMES } from "@/lib/programmes";
 import { SOCIAL_LINKS } from "@/components/site/socialLinks";
 import { logTraffic } from "@/lib/traffic";
 
-export const metadata: Metadata = {
-  title: `Contact Us — ${SITE_NAME}`,
-  description: "Get in touch with Asif Fashion Academy about fashion design and sewing classes in Milton Keynes and online.",
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Contact Us",
+  description:
+    "Contact Asif Fashion Academy in Milton Keynes about sewing and fashion courses. Email hello@asiffashionacademy.com or call +44 7786 235293.",
+  path: "/contact",
+});
 
 const CONTACT_DETAILS = [
   {

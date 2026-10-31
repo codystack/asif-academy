@@ -85,31 +85,11 @@ export async function updateOrderStatus(sessionId: string, status: OrderStatus) 
 
 // Traffic
 
-export async function getTraffic(): Promise<TrafficEntry[]> {
-  const sql = db();
-  return sql<TrafficEntry[]>`
-    SELECT page, path, ${fmt("timestamp")} AS timestamp, ip, user_agent FROM traffic ORDER BY id`;
-}
-
 export async function appendTraffic(entry: TrafficEntry) {
   const sql = db();
   await sql`
     INSERT INTO traffic (page, path, "timestamp", ip, user_agent)
     VALUES (${entry.page}, ${entry.path}, ${entry.timestamp}, ${entry.ip}, ${entry.user_agent})`;
-}
-
-export async function getTrafficCounts(): Promise<Record<string, number>> {
-  const sql = db();
-  const rows = await sql<{ page: string; count: number }[]>`
-    SELECT page, count(*)::int AS count FROM traffic GROUP BY page ORDER BY count DESC`;
-  return Object.fromEntries(rows.map((row) => [row.page, row.count]));
-}
-
-export async function getRecentTraffic(limit = 8): Promise<TrafficEntry[]> {
-  const sql = db();
-  return sql<TrafficEntry[]>`
-    SELECT page, path, ${fmt("timestamp")} AS timestamp, ip, user_agent
-    FROM traffic ORDER BY id DESC LIMIT ${limit}`;
 }
 
 // Abandoned carts
@@ -202,8 +182,6 @@ export type OverviewStats = {
   revenue: number;
   registrations: number;
   messages: number;
-  visitsWeek: number;
-  visitsTotal: number;
 };
 
 // Revenue counts every registration (Payment Link and site checkout payments both create one)
@@ -217,8 +195,6 @@ export async function getOverviewStats(): Promise<OverviewStats> {
            WHERE status = 'paid' AND NOT EXISTS (SELECT 1 FROM registrations r WHERE r.session_id = o.session_id))
       )::float8 AS "revenue",
       (SELECT count(*) FROM registrations)::int AS "registrations",
-      (SELECT count(*) FROM messages)::int AS "messages",
-      (SELECT count(*) FROM traffic WHERE "timestamp" >= now() - interval '7 days')::int AS "visitsWeek",
-      (SELECT count(*) FROM traffic)::int AS "visitsTotal"`;
+      (SELECT count(*) FROM messages)::int AS "messages"`;
   return stats;
 }

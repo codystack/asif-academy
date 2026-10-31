@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import { JsonLd, pageMetadata } from "@/lib/seo";
 import FaqSection from "@/components/site/FaqSection";
-import { SITE_NAME } from "@/lib/config";
 import { FAQS } from "@/lib/faqs";
 import { logTraffic } from "@/lib/traffic";
 
-export const metadata: Metadata = {
-  title: `FAQ — ${SITE_NAME}`,
-  description: "Answers to common questions about Asif Fashion Academy's sewing and fashion training programmes in Milton Keynes.",
-};
+export const metadata: Metadata = pageMetadata({
+  title: "FAQ",
+  description:
+    "Answers to common questions about Asif Fashion Academy's sewing and fashion courses in Milton Keynes: experience needed, equipment, materials, payment and qualifications.",
+  path: "/faq",
+});
 
 // Lets search engines show the questions and answers directly in results.
 const faqSchema = {
@@ -25,7 +27,7 @@ export default async function FaqPage() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <JsonLd data={faqSchema} />
       <FaqSection as="h1" className="is-page" />
     </>
   );

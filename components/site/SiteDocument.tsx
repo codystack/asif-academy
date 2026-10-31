@@ -6,7 +6,7 @@ import ThemeScripts from "./ThemeScripts";
 // The header is rendered by the nested layouts, which choose its variant.
 export default function SiteDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html className="no-js" lang="en">
+    <html className="no-js" lang="en-GB">
       <ThemeHead />
       <body className="body-bg">
         {children}

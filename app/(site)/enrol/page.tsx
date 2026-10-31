@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import EnrolForm from "./EnrolForm";
-import { SITE_NAME } from "@/lib/config";
 import { findRegistration } from "@/lib/data";
 import { findPaidProgramme, isPreviewSession } from "@/lib/programmePayment";
 import { findProgramme } from "@/lib/programmes";
@@ -17,8 +16,8 @@ function splitName(fullName: string) {
 }
 
 export const metadata: Metadata = {
-  title: `Complete Your Enrolment — ${SITE_NAME}`,
-  robots: { index: false },
+  title: "Complete Your Enrolment",
+  robots: { index: false, follow: false },
 };
 
 // Reached from /success after a paid pricing-page programme or workshop; the session is re-checked with Stripe here.

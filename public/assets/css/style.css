@@ -225,9 +225,18 @@ h3 {
 
 .admin-metrics {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 16px;
     margin-bottom: 24px;
+}
+
+/* Three cards on the first row, two wider ones on the second. */
+.admin-metrics .metric-card {
+    grid-column: span 2;
+}
+
+.admin-metrics .metric-card:nth-child(n + 4) {
+    grid-column: span 3;
 }
 
 .metric-card {
@@ -315,39 +324,6 @@ h3 {
     flex-shrink: 0;
     align-items: flex-end;
     text-align: right;
-}
-
-.admin-bars {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 14px;
-}
-
-.admin-bar-label {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 6px;
-    font-size: .88rem;
-}
-
-.admin-bar-label strong {
-    font-variant-numeric: tabular-nums;
-}
-
-.admin-bar {
-    height: 8px;
-    border-radius: 999px;
-    background: var(--admin-primary-soft);
-}
-
-.admin-bar div {
-    height: 100%;
-    min-width: 8px;
-    border-radius: inherit;
-    background: var(--admin-primary);
 }
 
 .admin-empty-cell {
@@ -855,6 +831,15 @@ form textarea:focus {
 
     .admin-metrics {
         grid-template-columns: 1fr 1fr;
+    }
+
+    .admin-metrics .metric-card,
+    .admin-metrics .metric-card:nth-child(n + 4) {
+        grid-column: auto;
+    }
+
+    .admin-metrics .metric-card:first-child {
+        grid-column: 1 / -1;
     }
 }
 

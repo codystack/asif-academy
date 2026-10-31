@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
-import { SITE_NAME } from "@/lib/config";
+import { pageMetadata } from "@/lib/seo";
 import { PROGRAMMES, SIP_AND_SEW } from "@/lib/programmes";
 import { logTraffic } from "@/lib/traffic";
 
-export const metadata: Metadata = {
-  title: `Pricing — ${SITE_NAME}`,
-  description: "Course fees and schedules for Asif Fashion Academy's sewing and fashion training programmes in Milton Keynes.",
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Pricing",
+  description:
+    "Course fees and schedules for Asif Fashion Academy: Beginners Sewing Course £500, Intensive Fashion Training £1,000, Advanced Masterclass £1,500 and Sip & Sew from £175.",
+  path: "/pricing",
+});
 
 const CheckIcon = () => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">

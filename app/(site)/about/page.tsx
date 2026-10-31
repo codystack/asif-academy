@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
-import { SITE_NAME } from "@/lib/config";
+import { pageMetadata } from "@/lib/seo";
 import { PROGRAMMES, SIP_AND_SEW } from "@/lib/programmes";
 import Highlight from "@/components/site/Highlight";
 import RibbonScroll from "@/components/site/RibbonScroll";
 import { RIBBON_CYCLES, RIBBON_TEXT } from "@/lib/ribbon";
+import { REASONS } from "@/lib/reasons";
 import { logTraffic } from "@/lib/traffic";
 
-export const metadata: Metadata = {
-  title: `About Us — ${SITE_NAME}`,
+export const metadata: Metadata = pageMetadata({
+  title: "About Us",
   description:
-    "Asif Fashion Academy (AFA) in Milton Keynes offers practical fashion education for aspiring designers, sewing enthusiasts and anyone ready to develop their garment-making skills.",
-};
+    "Founded by fashion designer Yétúndé Asif, Asif Fashion Academy in Milton Keynes offers hands-on fashion and sewing training for beginners, developing sewists and aspiring designers.",
+  path: "/about",
+});
 
 const STATS = [
   { value: "3", label: "Programmes, from first stitch to masterclass" },
@@ -23,29 +25,6 @@ const APPROACH = [
   "Students learn through demonstrations, guided exercises and practical projects, developing their understanding of sewing and garment construction as they progress.",
   "We aim to provide a supportive learning environment where questions are encouraged, techniques are explained clearly and students have opportunities to develop their individual abilities.",
   "Whether you are starting from scratch or refining existing techniques, we want you to leave each learning experience with greater knowledge, confidence and practical skills.",
-];
-
-const REASONS = [
-  {
-    title: "A professional learning environment",
-    text: "Learn in a dedicated fashion studio with a focus on practical skills and craftsmanship.",
-  },
-  {
-    title: "A hands-on approach",
-    text: "Develop your skills by practising techniques rather than relying on theory alone.",
-  },
-  {
-    title: "Learning for different levels",
-    text: "Explore training opportunities suited to your experience, from introductory sewing to more advanced development.",
-  },
-  {
-    title: "A focus on quality",
-    text: "Build an appreciation for precision, garment construction and thoughtful finishing.",
-  },
-  {
-    title: "A creative community",
-    text: "Learn alongside others who share an interest in sewing, fashion and creative development.",
-  },
 ];
 
 export default async function AboutPage() {
