@@ -1,4 +1,4 @@
-// Programmes sold from the pricing page through Stripe Payment Links (or the site checkout as a fallback).
+// Programmes and workshops sold from the pricing page through Stripe Payment Links (or the site checkout as a fallback).
 // Fees come from the academy's website content document, where they are still marked "Confirm".
 
 export type Programme = {
@@ -14,6 +14,8 @@ export type Programme = {
   featured?: boolean;
   // Optional Stripe Payment Link. When set, Pay Now opens it instead of the site checkout.
   paymentLink?: string;
+  // Other amounts that also count as paid in full, such as an early bird price.
+  altAmountsPence?: number[];
 };
 
 export const PROGRAMMES: Programme[] = [
@@ -56,6 +58,21 @@ export const PROGRAMMES: Programme[] = [
   },
 ];
 
+// Shown in its own banner on the pricing page rather than as a programme card.
+export const SIP_AND_SEW: Programme = {
+  id: "sip-and-sew",
+  name: "Sip & Sew Workshop",
+  tag: "Workshop",
+  price: "£195",
+  amountPence: 19500,
+  altAmountsPence: [17500],
+  length: "One-off workshop",
+  classesPerWeek: "",
+  summary: "One-off sewing workshops. Dates vary, so get in touch to hear about the next one.",
+  features: [],
+  paymentLink: "https://buy.stripe.com/aFa14mcs87K66St44mdZ60C",
+};
+
 export function findProgramme(id: string): Programme | null {
-  return PROGRAMMES.find((programme) => programme.id === id) ?? null;
+  return [...PROGRAMMES, SIP_AND_SEW].find((programme) => programme.id === id) ?? null;
 }

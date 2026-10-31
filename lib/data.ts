@@ -46,15 +46,12 @@ export type Registration = {
   programme_id: string;
   programme_name: string;
   amount_paid: number;
-  name: string;
+  first_name: string;
+  last_name: string;
   email: string;
   phone: string;
   experience: string;
-  has_machine: string;
   goals: string;
-  emergency_name: string;
-  emergency_phone: string;
-  heard_about: string;
   created_at: string;
 };
 
@@ -117,14 +114,6 @@ export async function getRecentTraffic(limit = 8): Promise<TrafficEntry[]> {
 
 // Abandoned carts
 
-export async function getAbandonedCarts(): Promise<AbandonedCart[]> {
-  const sql = db();
-  return sql<AbandonedCart[]>`
-    SELECT session_id, course_id, title, price::float8 AS price,
-           ${fmt("created_at")} AS created_at, ${fmt("updated_at")} AS updated_at
-    FROM abandoned_carts ORDER BY created_at, session_id`;
-}
-
 export async function addAbandonedCart(cart: AbandonedCart) {
   const sql = db();
   const now = timestamp();
@@ -140,20 +129,19 @@ export async function removeAbandonedCart(sessionId: string) {
   await sql`DELETE FROM abandoned_carts WHERE session_id = ${sessionId}`;
 }
 
-export async function getAbandonedSummary() {
-  const sql = db();
-  const [summary] = await sql<{ count: number; total: number }[]>`
-    SELECT count(*)::int AS count, coalesce(sum(price), 0)::float8 AS total FROM abandoned_carts`;
-  return summary;
-}
-
 // Contact messages
 
-export async function getMessages(limit?: number): Promise<(Message & { id: number })[]> {
+export async function getMessages(limit?: number, offset = 0): Promise<(Message & { id: number })[]> {
   const sql = db();
   return sql<(Message & { id: number })[]>`
     SELECT id::int AS id, name, email, subject, message, ${fmt("created_at")} AS created_at
-    FROM messages ORDER BY created_at DESC, id DESC ${limit ? sql`LIMIT ${limit}` : sql``}`;
+    FROM messages ORDER BY created_at DESC, id DESC ${limit ? sql`LIMIT ${limit} OFFSET ${offset}` : sql``}`;
+}
+
+export async function getMessageCount(): Promise<number> {
+  const sql = db();
+  const [{ count }] = await sql<{ count: number }[]>`SELECT count(*)::int AS count FROM messages`;
+  return count;
 }
 
 export async function addMessage(message: Message) {
@@ -166,18 +154,34 @@ export async function addMessage(message: Message) {
 // Registrations
 
 const REGISTRATION_COLUMNS = (sql: ReturnType<typeof db>) => sql`
-  session_id, programme_id, programme_name, amount_paid::float8 AS amount_paid, name, email, phone, experience,
-  has_machine, goals, emergency_name, emergency_phone, heard_about, ${fmt("created_at")} AS created_at`;
+  session_id, programme_id, programme_name, amount_paid::float8 AS amount_paid, first_name, last_name, email, phone,
+  experience, goals, ${fmt("created_at")} AS created_at`;
 
-export async function getRegistrations(): Promise<Registration[]> {
+export async function getRegistrations(limit: number, offset = 0): Promise<Registration[]> {
   const sql = db();
-  return sql<Registration[]>`SELECT ${REGISTRATION_COLUMNS(sql)} FROM registrations ORDER BY created_at, session_id`;
+  return sql<Registration[]>`
+    SELECT ${REGISTRATION_COLUMNS(sql)} FROM registrations ORDER BY created_at DESC, session_id
+    LIMIT ${limit} OFFSET ${offset}`;
+}
+
+export async function getRegistrationCount(): Promise<number> {
+  const sql = db();
+  const [{ count }] = await sql<{ count: number }[]>`SELECT count(*)::int AS count FROM registrations`;
+  return count;
 }
 
 export async function getRecentRegistrations(limit = 5): Promise<Registration[]> {
   const sql = db();
   return sql<Registration[]>`
     SELECT ${REGISTRATION_COLUMNS(sql)} FROM registrations ORDER BY created_at DESC, session_id LIMIT ${limit}`;
+}
+
+// Which of these Stripe sessions have a completed enrolment form.
+export async function getRegisteredSessionIds(sessionIds: string[]): Promise<Set<string>> {
+  if (sessionIds.length === 0) return new Set();
+  const sql = db();
+  const rows = await sql<{ session_id: string }[]>`SELECT session_id FROM registrations WHERE session_id IN ${sql(sessionIds)}`;
+  return new Set(rows.map((row) => row.session_id));
 }
 
 export async function findRegistration(sessionId: string): Promise<Registration | null> {
@@ -197,8 +201,6 @@ export async function addRegistration(registration: Registration) {
 export type OverviewStats = {
   revenue: number;
   registrations: number;
-  paidOrders: number;
-  pendingOrders: number;
   messages: number;
   visitsWeek: number;
   visitsTotal: number;
@@ -215,8 +217,6 @@ export async function getOverviewStats(): Promise<OverviewStats> {
            WHERE status = 'paid' AND NOT EXISTS (SELECT 1 FROM registrations r WHERE r.session_id = o.session_id))
       )::float8 AS "revenue",
       (SELECT count(*) FROM registrations)::int AS "registrations",
-      (SELECT count(*) FROM orders WHERE status = 'paid')::int AS "paidOrders",
-      (SELECT count(*) FROM orders WHERE status = 'pending')::int AS "pendingOrders",
       (SELECT count(*) FROM messages)::int AS "messages",
       (SELECT count(*) FROM traffic WHERE "timestamp" >= now() - interval '7 days')::int AS "visitsWeek",
       (SELECT count(*) FROM traffic)::int AS "visitsTotal"`;

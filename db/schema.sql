@@ -46,14 +46,18 @@ CREATE TABLE IF NOT EXISTS registrations (
   programme_id text NOT NULL,
   programme_name text NOT NULL,
   amount_paid numeric(10, 2) NOT NULL,
-  name text NOT NULL,
+  first_name text NOT NULL,
+  last_name text NOT NULL,
   email text NOT NULL,
   phone text NOT NULL,
   experience text NOT NULL,
-  has_machine text NOT NULL DEFAULT '',
   goals text NOT NULL DEFAULT '',
-  emergency_name text NOT NULL DEFAULT '',
-  emergency_phone text NOT NULL DEFAULT '',
-  heard_about text NOT NULL DEFAULT '',
   created_at timestamp NOT NULL DEFAULT now()
 );
+
+-- Upgrades tables created before the form split the name and dropped the emergency contact, machine and heard-about questions.
+ALTER TABLE registrations ADD COLUMN IF NOT EXISTS first_name text NOT NULL DEFAULT '';
+ALTER TABLE registrations ADD COLUMN IF NOT EXISTS last_name text NOT NULL DEFAULT '';
+ALTER TABLE registrations DROP COLUMN IF EXISTS name, DROP COLUMN IF EXISTS emergency_name, DROP COLUMN IF EXISTS emergency_phone,
+  DROP COLUMN IF EXISTS has_machine,
+  DROP COLUMN IF EXISTS heard_about;

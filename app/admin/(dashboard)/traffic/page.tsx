@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import PageHeader from "@/components/admin/PageHeader";
 import { getTraffic } from "@/lib/data";
+import { formatTimestamp } from "@/lib/format";
 
 export const metadata: Metadata = { title: "Traffic" };
 
@@ -33,7 +34,7 @@ export default async function AdminTrafficPage() {
                 <tr key={i}>
                   <td>{entry.page}</td>
                   <td>{entry.path}</td>
-                  <td>{entry.timestamp}</td>
+                  <td>{formatTimestamp(entry.timestamp)}</td>
                   <td>{entry.ip}</td>
                 </tr>
               ))}

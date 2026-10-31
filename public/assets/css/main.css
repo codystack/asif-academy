@@ -3554,12 +3554,13 @@ input[type=color] {
   color: rgba(255, 255, 255, 0.6);
   font-size: 15px;
 }
+/* Logo and link columns stay side by side on tablets; they only stack on phones */
 @media (max-width: 1199px) {
   .tp-site-footer-top {
-    flex-direction: column;
+    gap: 40px;
   }
   .tp-site-footer-links {
-    gap: 50px;
+    gap: 44px;
   }
 }
 @media (max-width: 767px) {
@@ -3567,6 +3568,9 @@ input[type=color] {
     margin: 0 10px 10px;
     border-radius: 28px;
     padding-top: 70px;
+  }
+  .tp-site-footer-top {
+    flex-direction: column;
   }
   .tp-site-footer-links {
     display: grid;
@@ -10313,10 +10317,11 @@ input[type=color] {
   box-shadow: 0 3px 0 #14201a;
 }
 
+/* Spans the full viewport at every size; side cards and shapes are placed in % so they spread with it. */
 .tp-hero-fit-gallery {
-  max-width: 1440px;
+  width: 100%;
   height: 520px;
-  margin: 70px auto 0;
+  margin: 70px 0 0;
 }
 .tp-hero-fit-ribbon {
   position: absolute;
@@ -10361,14 +10366,14 @@ input[type=color] {
 }
 .tp-hero-fit-card-left {
   top: 180px;
-  left: 4px;
+  left: 3%;
   width: 190px;
   height: 222px;
   transform: rotate(-4deg);
 }
 .tp-hero-fit-card-right {
   top: 20px;
-  right: 40px;
+  right: 4%;
   width: 185px;
   height: 222px;
   transform: rotate(-4deg);
@@ -10379,7 +10384,7 @@ input[type=color] {
 }
 .tp-hero-fit-blob-smile {
   top: 112px;
-  left: 128px;
+  left: calc(3% + 124px);
   width: 80px;
   height: 74px;
   align-items: center;
@@ -10390,7 +10395,7 @@ input[type=color] {
 }
 .tp-hero-fit-blob-clover {
   top: -20px;
-  right: 200px;
+  right: calc(4% + 160px);
   width: 50px;
   height: 50px;
   z-index: 1;
@@ -10425,11 +10430,11 @@ input[type=color] {
     height: 180px;
   }
   .tp-hero-fit-blob-smile {
-    left: 100px;
+    left: calc(3% + 96px);
     top: 120px;
   }
   .tp-hero-fit-blob-clover {
-    right: 160px;
+    right: calc(4% + 120px);
   }
 }
 @media (max-width: 767px) {
@@ -10617,16 +10622,6 @@ a.tp-contact-fit-value:hover {
   letter-spacing: -0.02em;
   color: #14201a;
 }
-.tp-contact-fit-status {
-  margin-bottom: 24px;
-  font-weight: 500;
-}
-.tp-contact-fit-status-success {
-  color: #1c7a3f;
-}
-.tp-contact-fit-status-error {
-  color: #a12626;
-}
 .tp-contact-fit-form {
   display: flex;
   flex-direction: column;
@@ -10645,18 +10640,10 @@ a.tp-contact-fit-value:hover {
   padding: 0;
   border: 0;
 }
-.tp-contact-fit-field > span,
-.tp-contact-fit-field legend {
-  margin-bottom: 0;
-  padding: 0;
-  float: none;
-  width: auto;
+.tp-contact-fit-field > span {
   color: #14201a;
   font-size: 17px;
   font-weight: 500;
-}
-.tp-contact-fit-field legend {
-  margin-bottom: 12px;
 }
 .tp-contact-fit-field input,
 .tp-contact-fit-field select,
@@ -10681,38 +10668,6 @@ a.tp-contact-fit-value:hover {
 .tp-contact-fit-field textarea:focus {
   border-color: #5a189a;
   box-shadow: 0 0 0 3px rgba(90, 24, 154, 0.18);
-}
-.tp-contact-fit-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-.tp-contact-fit-option {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 11px 20px 11px 14px;
-  border: 1px solid rgba(20, 32, 26, 0.08);
-  border-radius: 100px;
-  background: var(--tp-common-white);
-  color: #14201a;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
-.tp-contact-fit-option input {
-  width: 18px;
-  height: 18px;
-  margin: 0;
-  accent-color: #5a189a;
-}
-.tp-contact-fit-option:has(input:checked) {
-  border-color: #5a189a;
-  background: #5a189a;
-  color: var(--tp-common-white);
-}
-.tp-contact-fit-option input:checked {
-  accent-color: var(--tp-common-white);
 }
 .tp-contact-fit-btn {
   width: 100%;
@@ -11027,6 +10982,39 @@ body:has(.tp-pricing-fit) {
   padding-left: 36px;
   padding-right: 36px;
 }
+.tp-pricing-fit-workshop-cta {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 32px;
+}
+.tp-pricing-fit-workshop-prices {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+.tp-pricing-fit-workshop-price {
+  color: #14201a;
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.tp-pricing-fit-workshop-price small {
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0;
+  opacity: 0.75;
+}
+.tp-pricing-fit-workshop-early {
+  padding: 5px 12px;
+  border-radius: 100px;
+  background: #ffe3dd;
+  color: #c4301a;
+  font-size: 14px;
+  font-weight: 600;
+}
 .tp-pricing-compare {
   padding: 80px 0 120px;
 }
@@ -11111,6 +11099,14 @@ body:has(.tp-pricing-fit) {
     margin-left: auto;
     margin-right: auto;
   }
+  .tp-pricing-fit-workshop-cta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+  .tp-pricing-fit-workshop-prices {
+    align-items: flex-start;
+  }
   .tp-pricing-compare-title {
     font-size: 44px;
   }
@@ -11136,7 +11132,20 @@ body:has(.tp-pricing-fit) {
 
 /*# sourceMappingURL=main.css.map */
 
-/* FAQ accordion (faq and pricing pages) */
+/* Notyf toasts */
+.notyf {
+  font-family: var(--tp-ff-bricolage, inherit);
+}
+.notyf__toast {
+  border-radius: 14px;
+}
+.notyf__message {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+/* FAQ accordion (faq page) */
 .tp-faq-fit {
   padding: 40px 0 120px;
   font-family: var(--tp-ff-bricolage);
@@ -11280,5 +11289,557 @@ body:has(.tp-pricing-fit) {
   .tp-faq-fit-item p {
     padding: 0 20px 22px;
     font-size: 16px;
+  }
+}
+
+/*----------------------------------------*/
+/*  About page (light)
+/*----------------------------------------*/
+.tp-about-fit-hero,
+.tp-about-fit-banner,
+.tp-about-fit-stats,
+.tp-about-fit-teach,
+.tp-about-fit-split,
+.tp-about-fit-cta {
+  font-family: var(--tp-ff-bricolage);
+}
+.tp-about-fit-hero {
+  padding: 180px 0 70px;
+  background: #f8f9fa;
+}
+.tp-about-fit-title {
+  max-width: 1000px;
+  margin: 0 auto 40px;
+  font-family: inherit;
+  font-size: 84px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: #14201a;
+}
+.tp-about-fit-lead {
+  max-width: 680px;
+  margin: 0 auto;
+  font-size: 19px;
+  line-height: 1.6;
+  color: #4a524e;
+}
+/* The founder story under the hero heading reads better in a wider column */
+.tp-about-fit-hero .tp-about-fit-lead {
+  max-width: 900px;
+  padding-top: 20px;
+}
+/* Founder story under the hero caption: a narrow, left-aligned column for comfortable reading */
+.tp-about-fit-story {
+  max-width: 720px;
+  margin: 50px auto 0;
+  padding-top: 44px;
+  border-top: 1px solid rgba(20, 32, 26, 0.12);
+  text-align: left;
+}
+.tp-about-fit-story p {
+  margin-bottom: 20px;
+  font-size: 18px;
+  line-height: 1.7;
+  color: #4a524e;
+}
+.tp-about-fit-story strong {
+  font-weight: 600;
+  color: #14201a;
+}
+.tp-about-fit-story .tp-about-fit-story-close {
+  margin: 32px 0 0;
+  padding-left: 20px;
+  border-left: 4px solid var(--tp-theme-1);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #5a189a;
+}
+.tp-about-fit-heading {
+  margin-bottom: 30px;
+  font-family: inherit;
+  font-size: 64px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: #14201a;
+}
+.tp-about-fit-container {
+  max-width: 1240px;
+}
+.tp-about-fit-cta-title {
+  max-width: 860px;
+}
+.tp-about-fit-text {
+  max-width: 560px;
+  margin-bottom: 34px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: #4a524e;
+}
+
+/* Photo with a scalloped bottom edge that runs into the stats section */
+.tp-about-fit-banner {
+  position: relative;
+  padding: 0 40px;
+  background: #f8f9fa;
+}
+.tp-about-fit-ribbon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: #5a189a;
+}
+.tp-about-fit-ribbon text {
+  fill: var(--tp-common-white);
+  font-family: var(--tp-ff-bricolage);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.tp-about-fit-banner-img {
+  position: relative;
+  z-index: 1;
+  max-width: 1000px;
+  height: 540px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 28px 28px 0 0;
+}
+.tp-about-fit-banner-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+}
+.tp-about-fit-scallop {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 90px;
+  color: var(--tp-common-white);
+}
+
+.tp-about-fit-stats {
+  padding: 90px 0 120px;
+  background: var(--tp-common-white);
+}
+.tp-about-fit-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+}
+.tp-about-fit-stat {
+  padding: 36px 36px 30px;
+  border: 1.5px solid var(--tp-about-edge);
+  border-radius: 22px;
+  background: var(--tp-about-fill);
+  box-shadow: 5px 6px 0 var(--tp-about-edge);
+}
+/* Card colours, also used by the numbered chips in "How we teach" */
+.tp-about-fit-stat-1 {
+  --tp-about-fill: #ece0f8;
+  --tp-about-edge: #5a189a;
+}
+.tp-about-fit-stat-2 {
+  --tp-about-fill: #ffe0d9;
+  --tp-about-edge: #d63a1f;
+}
+.tp-about-fit-stat-3 {
+  --tp-about-fill: #f9d9ea;
+  --tp-about-edge: #b54a85;
+}
+.tp-about-fit-stat-4 {
+  --tp-about-fill: #fbe8c8;
+  --tp-about-edge: #c48a2c;
+}
+.tp-about-fit-stat-value {
+  margin: 0 0 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(20, 32, 26, 0.15);
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: #14201a;
+}
+.tp-about-fit-stat-label {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.45;
+  color: #3d4a43;
+}
+
+.tp-about-fit-teach {
+  overflow: hidden;
+  padding: 130px 0 150px;
+  background: #efe6f9;
+}
+.tp-about-fit-teach-intro {
+  max-width: 900px;
+  margin: 0 auto 110px;
+}
+.tp-about-fit-teach-intro .tp-hero-fit-badge {
+  border-color: transparent;
+  background: var(--tp-common-white);
+}
+.tp-about-fit-teach .tp-about-fit-heading {
+  margin-bottom: 24px;
+}
+.tp-about-fit-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 36px;
+  align-items: center;
+}
+.tp-about-fit-step {
+  display: flex;
+  flex-direction: column;
+  min-height: 340px;
+  padding: 40px;
+  border-radius: 26px;
+  background: var(--tp-common-white);
+  box-shadow: 0 20px 40px rgba(60, 9, 108, 0.08);
+}
+.tp-about-fit-step:nth-child(1) {
+  transform: rotate(-5deg);
+}
+.tp-about-fit-step:nth-child(3) {
+  transform: rotate(5deg);
+}
+.tp-about-fit-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: auto;
+  border: 1.5px solid var(--tp-about-edge);
+  border-radius: 14px;
+  background: var(--tp-about-fill);
+  box-shadow: 4px 5px 0 var(--tp-about-edge);
+  font-size: 22px;
+  font-weight: 500;
+  color: #14201a;
+}
+.tp-about-fit-step p {
+  margin: 48px 0 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: #3d4a43;
+}
+
+/* Why choose AFA: wide cards in two columns, an odd last card spans both */
+.tp-about-fit-why {
+  overflow: hidden;
+  font-family: var(--tp-ff-bricolage);
+  padding: 140px 0 120px;
+  background: #f8f9fa;
+}
+.tp-about-fit-why .tp-about-fit-heading {
+  margin-bottom: 80px;
+}
+.tp-about-fit-why-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+}
+.tp-about-fit-why-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+  padding: 36px 40px;
+  border: 1px solid rgba(20, 32, 26, 0.12);
+  border-radius: 24px;
+  background: var(--tp-common-white);
+}
+.tp-about-fit-why-card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+.tp-about-fit-why-card .tp-about-fit-step-num {
+  flex: none;
+  margin-bottom: 0;
+}
+.tp-about-fit-why-card h3 {
+  margin: 4px 0 10px;
+  font-family: inherit;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: #14201a;
+}
+.tp-about-fit-why-card p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: #3d4a43;
+}
+.tp-about-fit-split {
+  padding: 140px 0;
+  background: var(--tp-common-white);
+}
+.tp-about-fit-split-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.05fr;
+  gap: 90px;
+  align-items: center;
+}
+.tp-about-fit-split-img {
+  height: 600px;
+  overflow: hidden;
+  border-radius: 28px;
+}
+.tp-about-fit-split-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.tp-about-fit-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tp-about-fit-chips li {
+  padding: 12px 22px;
+  border-radius: 100px;
+  background: #efe6f9;
+  color: #3c096c;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.tp-about-fit-cta {
+  position: relative;
+  overflow: hidden;
+  padding: 150px 0 160px;
+  background: #fbe3d6;
+}
+.tp-about-fit-cta .container {
+  position: relative;
+  z-index: 2;
+}
+.tp-about-fit-cta .tp-hero-fit-badge {
+  border-color: transparent;
+  background: var(--tp-common-white);
+}
+.tp-about-fit-cta .tp-about-fit-lead {
+  margin-bottom: 44px;
+}
+.tp-about-fit-cta .tp-about-fit-lead p {
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+.tp-about-fit-cta .tp-about-fit-lead p:last-child {
+  margin-bottom: 0;
+}
+/* Shown on phones and tablets, where the sticky note carrying the same line is hidden */
+.tp-about-fit-cta-tagline {
+  margin: 40px 0 0;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #5a189a;
+}
+.tp-about-fit-cta-photo {
+  position: absolute;
+  left: 4%;
+  bottom: 0;
+  width: 260px;
+  height: 380px;
+  overflow: hidden;
+  border-radius: 26px 26px 0 0;
+  box-shadow: 0 20px 40px rgba(20, 32, 26, 0.15);
+}
+.tp-about-fit-cta-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+}
+.tp-about-fit-note {
+  position: absolute;
+  top: 80px;
+  right: 5%;
+  width: 260px;
+  padding: 34px 26px 30px;
+  background: #ffe9a8;
+  box-shadow: 0 14px 26px rgba(20, 32, 26, 0.12);
+  transform: rotate(5deg);
+  font-family: "Comic Sans MS", "Segoe Print", "Bradley Hand", cursive;
+  font-size: 24px;
+  line-height: 1.35;
+  color: #14201a;
+}
+.tp-about-fit-note::before {
+  content: "";
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  width: 90px;
+  height: 28px;
+  margin-left: -45px;
+  background: rgba(214, 196, 160, 0.75);
+  transform: rotate(-4deg);
+}
+
+@media (max-width: 1399px) {
+  .tp-about-fit-cta-photo {
+    width: 200px;
+    height: 300px;
+  }
+  .tp-about-fit-note {
+    right: 2%;
+    width: 220px;
+    font-size: 19px;
+  }
+}
+@media (max-width: 1199px) {
+  .tp-about-fit-title {
+    font-size: 68px;
+  }
+  .tp-about-fit-heading {
+    font-size: 52px;
+  }
+  .tp-about-fit-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .tp-about-fit-step {
+    padding: 32px;
+  }
+}
+@media (max-width: 991px) {
+  .tp-about-fit-hero {
+    padding-top: 150px;
+  }
+  .tp-about-fit-title {
+    font-size: 54px;
+  }
+  .tp-about-fit-banner {
+    padding: 0 20px;
+  }
+  .tp-about-fit-banner-img {
+    height: 440px;
+  }
+  .tp-about-fit-scallop {
+    height: 50px;
+  }
+  .tp-about-fit-steps {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+    margin: 0 auto;
+    gap: 28px;
+  }
+  .tp-about-fit-step,
+  .tp-about-fit-step:nth-child(1),
+  .tp-about-fit-step:nth-child(3) {
+    min-height: 0;
+    transform: none;
+  }
+  .tp-about-fit-step p {
+    margin-top: 32px;
+  }
+  .tp-about-fit-split {
+    padding: 100px 0;
+  }
+  .tp-about-fit-why {
+    padding: 100px 0 90px;
+  }
+  .tp-about-fit-why-grid {
+    grid-template-columns: 1fr;
+  }
+  .tp-about-fit-why-card h3 {
+    font-size: 24px;
+  }
+  .tp-about-fit-split-grid {
+    grid-template-columns: 1fr;
+    gap: 50px;
+  }
+  .tp-about-fit-split-img {
+    height: 460px;
+  }
+  .tp-about-fit-cta {
+    padding: 110px 0;
+  }
+}
+@media (max-width: 767px) {
+  .tp-about-fit-hero {
+    padding: 130px 0 50px;
+  }
+  .tp-about-fit-title {
+    font-size: 40px;
+  }
+  .tp-about-fit-heading {
+    font-size: 38px;
+  }
+  .tp-about-fit-lead {
+    font-size: 17px;
+  }
+  .tp-about-fit-banner {
+    padding: 0 16px;
+  }
+  .tp-about-fit-banner-img {
+    height: 320px;
+    border-radius: 20px;
+  }
+  .tp-about-fit-scallop {
+    height: 30px;
+  }
+  .tp-about-fit-stats {
+    padding: 60px 0 80px;
+  }
+  .tp-about-fit-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .tp-about-fit-stat-value {
+    font-size: 46px;
+  }
+  .tp-about-fit-teach {
+    padding: 80px 0 90px;
+  }
+  .tp-about-fit-teach-intro {
+    margin-bottom: 70px;
+  }
+  .tp-about-fit-split {
+    padding: 80px 0;
+  }
+  .tp-about-fit-why {
+    padding: 80px 0 70px;
+  }
+  .tp-about-fit-why .tp-about-fit-heading {
+    margin-bottom: 50px;
+  }
+  .tp-about-fit-why-card {
+    gap: 20px;
+    padding: 26px 22px;
+  }
+  .tp-about-fit-why-card .tp-about-fit-step-num {
+    width: 52px;
+    height: 52px;
+    font-size: 18px;
+  }
+  .tp-about-fit-why-card h3 {
+    font-size: 21px;
+  }
+  .tp-about-fit-why-card p {
+    font-size: 16px;
+  }
+  .tp-about-fit-split-img {
+    height: 380px;
+  }
+  .tp-about-fit-chips li {
+    font-size: 15px;
+  }
+  .tp-about-fit-cta {
+    padding: 80px 0;
   }
 }

@@ -1,19 +1,16 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { useFormToast } from "@/lib/toast";
 import { login, type FormState } from "../actions";
 
 export default function LoginForm() {
   const [state, formAction, pending] = useActionState<FormState, FormData>(login, { message: null, error: null });
   const [showPassword, setShowPassword] = useState(false);
+  useFormToast(state);
 
   return (
     <>
-      {state.error && (
-        <div className="alert" style={{ borderColor: "#f5b7b1", color: "#9c1a1a", background: "#fff2f2" }}>
-          {state.error}
-        </div>
-      )}
       <form action={formAction}>
         <label htmlFor="email">Email</label>
         <input id="email" name="email" type="email" autoComplete="username" required autoFocus />

@@ -1,4 +1,4 @@
-// Questions shown on the FAQ and pricing pages, as supplied by the academy.
+// Questions shown on the FAQ page, as supplied by the academy.
 
 export type Faq = { question: string; answer: string };
 

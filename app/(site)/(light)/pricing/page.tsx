@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import FaqSection from "@/components/site/FaqSection";
 import { SITE_NAME } from "@/lib/config";
-import { PROGRAMMES } from "@/lib/programmes";
+import { PROGRAMMES, SIP_AND_SEW } from "@/lib/programmes";
 import { logTraffic } from "@/lib/traffic";
 
 export const metadata: Metadata = {
@@ -74,9 +73,17 @@ export default async function PricingPage() {
             <div>
               <span className="tp-pricing-fit-level">Workshops</span>
               <h2 className="tp-pricing-fit-name">Sip &amp; Sew Workshops</h2>
-              <p>One-off sewing workshops. Dates vary, and prices are confirmed for each event.</p>
+              <p>One-off sewing workshops. Dates vary, so get in touch to hear about the next one.</p>
             </div>
-            <a href="/contact" className="tp-pricing-fit-btn">Ask about dates</a>
+            <div className="tp-pricing-fit-workshop-cta">
+              <div className="tp-pricing-fit-workshop-prices">
+                <span className="tp-pricing-fit-workshop-early">Early bird £175</span>
+                <span className="tp-pricing-fit-workshop-price">
+                  £195
+                </span>
+              </div>
+              <a href={SIP_AND_SEW.paymentLink} className="tp-pricing-fit-btn">Reserve your spot</a>
+            </div>
           </div>
         </div>
       </section>
@@ -115,7 +122,6 @@ export default async function PricingPage() {
           </div>
         </div>
       </section>
-      <FaqSection />
     </>
   );
 }
