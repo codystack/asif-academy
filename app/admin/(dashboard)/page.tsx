@@ -1,19 +1,43 @@
 import Link from "next/link";
+import { unstable_rethrow } from "next/navigation";
 import PageHeader from "@/components/admin/PageHeader";
 import {
-  getAbandonedSummary,
   getMessages,
   getOverviewStats,
   getRecentRegistrations,
   getRecentTraffic,
   getTrafficCounts,
 } from "@/lib/data";
-import { formatCurrency } from "@/lib/format";
+import { formatCurrency, formatTimestamp } from "@/lib/format";
+import { listCheckoutSessions } from "@/lib/stripe";
+import EmptyState from "@/components/admin/EmptyState";
+
+// Count and total of Stripe checkouts in the last 30 days. Stripe returns at most 100 per call, so "more" means 100+.
+async function stripeLast30Days(status: "complete" | "expired") {
+  try {
+    const createdSince = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const { sessions, hasMore } = await listCheckoutSessions({ status, limit: 100, createdSince });
+    const total = sessions.reduce((sum, s) => sum + (s.amount_total ?? 0), 0) / 100;
+    return { count: sessions.length, total, more: hasMore };
+  } catch (error) {
+    // Let Next.js's own control-flow errors (such as dynamic rendering bailouts) through.
+    unstable_rethrow(error);
+    console.error(`Could not load ${status} Stripe checkouts:`, error);
+    return null;
+  }
+}
+
+function stripeMetric(label: string, summary: Awaited<ReturnType<typeof stripeLast30Days>>, totalLabel: string) {
+  if (!summary) return { label, value: "—", note: "Couldn't reach Stripe" };
+  const plus = summary.more ? "+" : "";
+  return { label, value: `${summary.count}${plus}`, note: `${formatCurrency(summary.total)}${plus} ${totalLabel} · last 30 days` };
+}
 
 export default async function AdminOverviewPage() {
-  const [stats, abandonedSummary, registrations, messages, trafficCounts, recentTraffic] = await Promise.all([
+  const [stats, paid, abandoned, registrations, messages, trafficCounts, recentTraffic] = await Promise.all([
     getOverviewStats(),
-    getAbandonedSummary(),
+    stripeLast30Days("complete"),
+    stripeLast30Days("expired"),
     getRecentRegistrations(5),
     getMessages(5),
     getTrafficCounts(),
@@ -25,14 +49,10 @@ export default async function AdminOverviewPage() {
   const metrics = [
     { label: "Revenue", value: formatCurrency(stats.revenue), note: "Registrations and paid orders" },
     { label: "Registrations", value: stats.registrations, note: "Enrolment forms submitted" },
-    { label: "Payments", value: stats.paidOrders, note: `${stats.pendingOrders} pending at checkout` },
+    stripeMetric("Payments", paid, "received"),
     { label: "Messages", value: stats.messages, note: "From the contact form" },
     { label: "Visits this week", value: stats.visitsWeek, note: `${stats.visitsTotal.toLocaleString("en-GB")} all time` },
-    {
-      label: "Abandoned carts",
-      value: abandonedSummary.count,
-      note: `${formatCurrency(abandonedSummary.total)} not completed`,
-    },
+    stripeMetric("Abandoned checkouts", abandoned, "not completed"),
   ];
 
   return (
@@ -64,18 +84,20 @@ export default async function AdminOverviewPage() {
               {registrations.map((r) => (
                 <li key={r.session_id}>
                   <div>
-                    <strong>{r.name}</strong>
+                    <strong>
+                      {r.first_name} {r.last_name}
+                    </strong>
                     <span>{r.programme_name}</span>
                   </div>
                   <div className="admin-list-meta">
                     <strong>{formatCurrency(r.amount_paid)}</strong>
-                    <span>{r.created_at}</span>
+                    <span>{formatTimestamp(r.created_at)}</span>
                   </div>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="admin-empty">No registrations yet.</p>
+            <EmptyState icon="registrations" title="No registrations yet" />
           )}
         </div>
 
@@ -93,13 +115,13 @@ export default async function AdminOverviewPage() {
                     <span>{m.subject || m.message}</span>
                   </div>
                   <div className="admin-list-meta">
-                    <span>{m.created_at}</span>
+                    <span>{formatTimestamp(m.created_at)}</span>
                   </div>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="admin-empty">No messages yet.</p>
+            <EmptyState icon="messages" title="No messages yet" />
           )}
         </div>
 
@@ -123,7 +145,7 @@ export default async function AdminOverviewPage() {
               ))}
             </ul>
           ) : (
-            <p className="admin-empty">No visits recorded yet.</p>
+            <EmptyState icon="traffic" title="No visits yet" />
           )}
         </div>
 
@@ -140,13 +162,13 @@ export default async function AdminOverviewPage() {
                     <span>{visit.ip}</span>
                   </div>
                   <div className="admin-list-meta">
-                    <span>{visit.timestamp}</span>
+                    <span>{formatTimestamp(visit.timestamp)}</span>
                   </div>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="admin-empty">No visits recorded yet.</p>
+            <EmptyState icon="traffic" title="No visits yet" />
           )}
         </div>
       </section>

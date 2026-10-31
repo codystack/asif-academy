@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_SLOGAN } from "@/lib/config";
+import RibbonScroll from "@/components/site/RibbonScroll";
+import { RIBBON_CYCLES, RIBBON_TEXT } from "@/lib/ribbon";
 import { logTraffic } from "@/lib/traffic";
 
 export const metadata: Metadata = {
@@ -45,20 +47,17 @@ export default async function HomePage() {
           <svg className="tp-hero-fit-ribbon tp-hero-fit-ribbon-desktop" viewBox="0 0 1440 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
             <path id="tp-hero-fit-curve" d="M-60 330C120 330 240 400 380 330C460 290 500 215 560 200C720 165 760 340 930 330C1130 318 1240 120 1500 140" fill="none" stroke="currentColor" strokeWidth="46" strokeLinecap="butt"></path>
             <text dy="7">
-              <textPath className="tp-hero-fit-ribbon-text" href="#tp-hero-fit-curve">
-                Pattern Drafting &nbsp;|&nbsp; Garment Construction &nbsp;|&nbsp; Live Feedback &nbsp;|&nbsp; Small Cohorts &nbsp;|&nbsp; Pattern Drafting &nbsp;|&nbsp; Garment Construction &nbsp;|&nbsp; Live Feedback &nbsp;|&nbsp; Small Cohorts &nbsp;|&nbsp; Pattern Drafting &nbsp;|&nbsp; Garment Construction &nbsp;|&nbsp; Live Feedback &nbsp;|&nbsp; Small Cohorts &nbsp;|
-              </textPath>
+              <textPath className="tp-hero-fit-ribbon-text" href="#tp-hero-fit-curve">{RIBBON_TEXT}</textPath>
             </text>
           </svg>
           {" "}
           <svg className="tp-hero-fit-ribbon tp-hero-fit-ribbon-mobile" viewBox="0 0 440 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
             <path id="tp-hero-fit-curve-mobile" d="M-40 400C30 380 70 337 130 320C200 300 260 360 330 330C400 300 440 230 470 110" fill="none" stroke="currentColor" strokeWidth="40" strokeLinecap="butt"></path>
             <text dy="6">
-              <textPath className="tp-hero-fit-ribbon-text" href="#tp-hero-fit-curve-mobile">
-                Pattern Drafting &nbsp;|&nbsp; Garment Construction &nbsp;|&nbsp; Live Feedback &nbsp;|&nbsp; Small Cohorts &nbsp;|&nbsp; Pattern Drafting &nbsp;|&nbsp; Garment Construction &nbsp;|&nbsp; Live Feedback &nbsp;|&nbsp; Small Cohorts &nbsp;|&nbsp; Pattern Drafting &nbsp;|&nbsp; Garment Construction &nbsp;|&nbsp; Live Feedback &nbsp;|&nbsp; Small Cohorts &nbsp;|
-              </textPath>
+              <textPath className="tp-hero-fit-ribbon-text" href="#tp-hero-fit-curve-mobile">{RIBBON_TEXT}</textPath>
             </text>
           </svg>
+          <RibbonScroll cycles={RIBBON_CYCLES} />
           <div className="tp-hero-fit-card tp-hero-fit-card-left">
             <img src="/assets/img/IMG_0131.JPG" alt="Student working on a garment" />
           </div>

@@ -1,5 +1,4 @@
-// Shared by the footer and the contact page.
-// Replace "#" with the academy's profile URLs.
+// Shared by the footer, the contact page and the header's side menu.
 export const SOCIAL_LINKS = [
   {
     label: "Instagram",

@@ -1,63 +1,39 @@
 import type { Metadata } from "next";
 import PageHeader from "@/components/admin/PageHeader";
-import { getRegistrations } from "@/lib/data";
+import Pagination from "@/components/admin/Pagination";
+import { getRegistrationCount, getRegistrations } from "@/lib/data";
 import { formatCurrency } from "@/lib/format";
+import RegistrationsTable from "./RegistrationsTable";
 
 export const metadata: Metadata = { title: "Registrations" };
 
-export default async function AdminRegistrationsPage() {
-  const registrations = (await getRegistrations()).reverse();
+const PAGE_SIZE = 10;
+
+export default async function AdminRegistrationsPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+  const total = await getRegistrationCount();
+  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  // Out-of-range or malformed ?page= values fall back to the nearest valid page.
+  const page = Math.min(Math.max(1, Number.parseInt((await searchParams).page ?? "", 10) || 1), pageCount);
+  const registrations = await getRegistrations(PAGE_SIZE, (page - 1) * PAGE_SIZE);
 
   return (
     <>
       <PageHeader eyebrow="Registrations" title="Enrolment forms from paid students" />
-      <div className="admin-card admin-table-card">
-        <div className="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Submitted</th>
-                <th>Plan</th>
-                <th>Paid</th>
-                <th>Name</th>
-                <th>Contact</th>
-                <th>Experience</th>
-                <th>Own machine</th>
-                <th>Goals</th>
-                <th>Emergency contact</th>
-                <th>Heard about us</th>
-              </tr>
-            </thead>
-            <tbody>
-              {registrations.length === 0 && (
-                <tr>
-                  <td colSpan={10} className="admin-empty">
-                    No registrations yet.
-                  </td>
-                </tr>
-              )}
-              {registrations.map((r) => (
-                <tr key={r.session_id}>
-                  <td>{r.created_at}</td>
-                  <td>{r.programme_name}</td>
-                  <td>{formatCurrency(r.amount_paid)}</td>
-                  <td>{r.name}</td>
-                  <td>
-                    {r.email}
-                    <br />
-                    {r.phone}
-                  </td>
-                  <td>{r.experience}</td>
-                  <td>{r.has_machine || "—"}</td>
-                  <td>{r.goals || "—"}</td>
-                  <td>{r.emergency_name ? `${r.emergency_name} (${r.emergency_phone || "no phone"})` : "—"}</td>
-                  <td>{r.heard_about || "—"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <RegistrationsTable
+        registrations={registrations.map((r) => ({
+          session_id: r.session_id,
+          name: `${r.first_name} ${r.last_name}`.trim(),
+          email: r.email,
+          phone: r.phone,
+          programme_name: r.programme_name,
+          amount_paid: formatCurrency(r.amount_paid),
+          experience: r.experience,
+          goals: r.goals,
+          created_at: r.created_at,
+        }))}
+      >
+        <Pagination page={page} pageCount={pageCount} total={total} pageSize={PAGE_SIZE} basePath="/admin/registrations" />
+      </RegistrationsTable>
     </>
   );
 }

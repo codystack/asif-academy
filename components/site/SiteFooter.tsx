@@ -5,6 +5,7 @@ const LINK_GROUPS = [
   {
     title: "Learn",
     links: [
+      { label: "Courses", href: "/courses" },
       { label: "Pricing", href: "/pricing" },
       { label: "FAQ", href: "/faq" },
     ],

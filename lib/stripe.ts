@@ -1,7 +1,7 @@
 import "server-only";
-import { STRIPE_SECRET_KEY } from "./config";
+import { STRIPE_HISTORY_START, STRIPE_SECRET_KEY } from "./config";
 
-// Minimal Stripe REST client covering the two Checkout calls this site makes.
+// Minimal Stripe REST client covering the Checkout calls this site makes.
 
 export type CheckoutSession = {
   id: string;
@@ -13,14 +13,24 @@ export type CheckoutSession = {
   customer_details?: { email?: string | null; name?: string | null; phone?: string | null } | null;
 };
 
+// A session as listed for the admin, with its line items expanded for the product name when requested.
+export type ListedSession = CheckoutSession & {
+  created: number;
+  customer_email: string | null;
+  payment_link: string | null;
+  line_items?: { data: { description: string | null }[] };
+};
+
 async function stripeRequest<T>(method: "GET" | "POST", path: string, params?: Record<string, string>): Promise<T> {
-  const res = await fetch(`https://api.stripe.com/v1/${path}`, {
+  // GET requests can't carry a body, so their params go in the query string.
+  const query = method === "GET" && params ? `?${new URLSearchParams(params)}` : "";
+  const res = await fetch(`https://api.stripe.com/v1/${path}${query}`, {
     method,
     headers: {
       Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
       "Content-Type": "application/x-www-form-urlencoded",
     },
-    body: params ? new URLSearchParams(params) : undefined,
+    body: method === "POST" && params ? new URLSearchParams(params) : undefined,
     cache: "no-store",
   });
   const json = await res.json();
@@ -58,4 +68,26 @@ export function createCheckoutSession(options: {
 
 export function retrieveCheckoutSession(sessionId: string) {
   return stripeRequest<CheckoutSession>("GET", `checkout/sessions/${encodeURIComponent(sessionId)}`);
+}
+
+// Checkout sessions (Payment Links and site checkout), newest first. "complete" sessions were paid; "expired" ones
+// were opened and left unpaid. Pass at most one cursor: startingAfter pages to older sessions, endingBefore to newer
+// ones, and hasMore refers to that direction. createdSince limits the list to sessions created at or after that time.
+export async function listCheckoutSessions(options: {
+  status: "complete" | "expired";
+  limit: number;
+  startingAfter?: string;
+  endingBefore?: string;
+  createdSince?: Date;
+  expandLineItems?: boolean;
+}) {
+  const params: Record<string, string> = { status: options.status, limit: String(options.limit) };
+  if (options.expandLineItems) params["expand[0]"] = "data.line_items";
+  if (options.startingAfter) params.starting_after = options.startingAfter;
+  else if (options.endingBefore) params.ending_before = options.endingBefore;
+  // Never list anything from before the admin's history start (see STRIPE_HISTORY_START).
+  const since = Math.max(options.createdSince?.getTime() ?? 0, STRIPE_HISTORY_START.getTime() || 0);
+  if (since) params["created[gte]"] = String(Math.floor(since / 1000));
+  const list = await stripeRequest<{ data: ListedSession[]; has_more: boolean }>("GET", "checkout/sessions", params);
+  return { sessions: list.data, hasMore: list.has_more };
 }

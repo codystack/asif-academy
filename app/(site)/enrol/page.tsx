@@ -2,22 +2,32 @@ import type { Metadata } from "next";
 import EnrolForm from "./EnrolForm";
 import { SITE_NAME } from "@/lib/config";
 import { findRegistration } from "@/lib/data";
-import { findPaidProgramme } from "@/lib/programmePayment";
+import { findPaidProgramme, isPreviewSession } from "@/lib/programmePayment";
 import { findProgramme } from "@/lib/programmes";
 import { logTraffic } from "@/lib/traffic";
+
+// Shows what was actually charged, which can be an early bird price rather than the listed one.
+const formatPounds = (pence: number) =>
+  new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP", minimumFractionDigits: pence % 100 ? 2 : 0 }).format(pence / 100);
+
+// Stripe collects one name field; the first word prefills First name and the rest Last name.
+function splitName(fullName: string) {
+  const [firstName = "", ...rest] = fullName.trim().split(/\s+/);
+  return { firstName, lastName: rest.join(" ") };
+}
 
 export const metadata: Metadata = {
   title: `Complete Your Enrolment — ${SITE_NAME}`,
   robots: { index: false },
 };
 
-// Reached from /success after a paid pricing-page programme; the session is re-checked with Stripe here.
+// Reached from /success after a paid pricing-page programme or workshop; the session is re-checked with Stripe here.
 export default async function EnrolPage({ searchParams }: { searchParams: Promise<{ session_id?: string; programme?: string }> }) {
   await logTraffic("enrol");
   const { session_id: sessionId, programme: programmeId } = await searchParams;
   const paid = await findPaidProgramme(sessionId, programmeId);
   const programme = paid && findProgramme(paid.programmeId);
-  const alreadyRegistered = paid ? Boolean(await findRegistration(paid.sessionId)) : false;
+  const alreadyRegistered = paid && !isPreviewSession(paid.sessionId) ? Boolean(await findRegistration(paid.sessionId)) : false;
 
   return (
     <section className="tp-contact-fit">
@@ -50,16 +60,18 @@ export default async function EnrolPage({ searchParams }: { searchParams: Promis
                   <ul>
                     <li>
                       <span>Amount paid</span>
-                      <strong>{programme.price}</strong>
+                      <strong>{formatPounds(paid.amountPence)}</strong>
                     </li>
                     <li>
                       <span>Length</span>
                       <strong>{programme.length}</strong>
                     </li>
-                    <li>
-                      <span>Classes per week</span>
-                      <strong>{programme.classesPerWeek}</strong>
-                    </li>
+                    {programme.classesPerWeek && (
+                      <li>
+                        <span>Classes per week</span>
+                        <strong>{programme.classesPerWeek}</strong>
+                      </li>
+                    )}
                   </ul>
                 </div>
               </>
@@ -88,7 +100,7 @@ export default async function EnrolPage({ searchParams }: { searchParams: Promis
               <EnrolForm
                 sessionId={paid.sessionId}
                 programmeId={paid.programmeId}
-                defaults={{ name: paid.name, email: paid.email, phone: paid.phone }}
+                defaults={{ ...splitName(paid.name), email: paid.email, phone: paid.phone }}
               />
             )}
           </div>

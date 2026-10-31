@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { logout } from "../actions";
 
 // 24x24 stroke icons, drawn with currentColor.
 const ICONS = {
@@ -49,11 +50,12 @@ export default function AdminNav() {
           <Icon name="site" />
           <span>View site</span>
         </a>
-        {/* Plain link: a prefetch must never hit the logout handler. */}
-        <a href="/admin/logout">
-          <Icon name="logout" />
-          <span>Logout</span>
-        </a>
+        <form action={logout}>
+          <button className="admin-logout" type="submit">
+            <Icon name="logout" />
+            <span>Logout</span>
+          </button>
+        </form>
       </div>
     </nav>
   );

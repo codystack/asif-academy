@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import Breadcrumb from "@/components/site/Breadcrumb";
 import { SITE_NAME } from "@/lib/config";
 import { getOrders, recordOrder, removeAbandonedCart, updateOrderStatus } from "@/lib/data";
 import { timestamp } from "@/lib/format";
@@ -11,6 +10,28 @@ import { clientIp, logTraffic } from "@/lib/traffic";
 
 export const metadata: Metadata = {
   title: `Thank You — ${SITE_NAME}`,
+};
+
+// Paid programme and workshop payments redirect to /enrol before reaching these, so "paid" here means any other paid session.
+const MESSAGES = {
+  paid: {
+    title: "Payment received",
+    text: "Thank you, your payment is confirmed. We'll be in touch by email with everything you need.",
+    primary: { href: "/", label: "Back to home" },
+    secondary: { href: "/contact", label: "Contact us" },
+  },
+  unpaid: {
+    title: "Payment not completed",
+    text: "Your payment didn't go through. Please return to the pricing page and try again.",
+    primary: { href: "/pricing", label: "View pricing" },
+    secondary: { href: "/contact", label: "Contact us" },
+  },
+  error: {
+    title: "We couldn't verify your payment",
+    text: "If you've paid and are seeing this, please contact us with your payment receipt and we'll sort it out.",
+    primary: { href: "/contact", label: "Contact us" },
+    secondary: { href: "/pricing", label: "View pricing" },
+  },
 };
 
 export default async function SuccessPage({
@@ -54,44 +75,24 @@ export default async function SuccessPage({
     redirect(`/enrol?session_id=${encodeURIComponent(sessionId)}&programme=${encodeURIComponent(paid.programmeId)}`);
   }
 
-  return (
-    <>
-      <Breadcrumb title="Enrollment Status" />
+  const message = MESSAGES[paymentStatus === "paid" || paymentStatus === "unpaid" ? paymentStatus : "error"];
 
-      <div className="tp-course-details-area z-1 pt-80 pb-110">
-        <div className="container text-center" style={{ maxWidth: "640px" }}>
-          {paymentStatus === "paid" ? (
-            <>
-              <h2 className="tp-section-title mb-20">You&apos;re enrolled!</h2>
-              <p className="tp-section-dec fw-500 mb-40">
-                Thank you — your enrollment is confirmed. Check your email for your live session schedule and access details.
-              </p>
-            </>
-          ) : paymentStatus === "unpaid" ? (
-            <>
-              <h2 className="tp-section-title mb-20">Payment not completed</h2>
-              <p className="tp-section-dec fw-500 mb-40">
-                Your payment didn&apos;t go through. Please return to the pricing page and try again.
-              </p>
-            </>
-          ) : (
-            <>
-              <h2 className="tp-section-title mb-20">We couldn&apos;t verify your payment</h2>
-              <p className="tp-section-dec fw-500 mb-40">
-                If you believe this is an error, please contact us and we&apos;ll sort it out.
-              </p>
-            </>
-          )}
-          <div className="d-flex gap-3 justify-content-center flex-wrap">
-            <a className="tp-btn tp-btn-xl" href="/pricing">
-              View pricing
+  return (
+    <section className="tp-contact-fit">
+      <div className="container">
+        <div className="tp-contact-fit-card tp-success-fit-card">
+          <div className="tp-enrol-done">
+            <h1 className="tp-contact-fit-card-title">{message.title}</h1>
+            <p>{message.text}</p>
+            <a href={message.primary.href} className="tp-contact-fit-btn">
+              {message.primary.label}
             </a>
-            <a className="tp-btn tp-btn-border tp-btn-xl" href="/">
-              Go home
+            <a href={message.secondary.href} className="tp-enrol-link">
+              {message.secondary.label}
             </a>
           </div>
         </div>
       </div>
-    </>
+    </section>
   );
 }
